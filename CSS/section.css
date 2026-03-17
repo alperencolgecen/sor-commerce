@@ -3,6 +3,7 @@ section {
     height: auto;
     display: flex;
     justify-content: center;
+    margin-top: 50px;
 }
 
 .bolum {

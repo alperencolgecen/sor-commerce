@@ -18,7 +18,7 @@ body {
 header {
     margin: 0 auto;
     width: 90%;
-    height: 130px;
+    height: auto;
     margin-left: 5%;
     margin-right: 5%;
     margin-top: 10px;
@@ -34,6 +34,7 @@ header {
     border-radius: 30px 3px 30px 3px;
     background-color: rgba(255, 255, 255, 0.5);
 }
+
 .navbar:hover{
     box-shadow: 0 0 8px rgba(255, 165, 65, 2);
     transition: all ease-in-out 0.5s;
@@ -48,6 +49,7 @@ header {
 .navbar:not(:active){
     transition: all ease-in-out 0.5s;
 }
+
 .navbar:active #marka_isim{
     box-shadow: 5px 0 10px  #00C853;
 }
@@ -77,16 +79,19 @@ header {
     box-shadow: 5px 0 10px rgba(255, 165, 0, 0.5);
     transition: all ease-in-out 0.3s;
 }
+
 .navbar #marka_isim:hover {
     box-shadow: 5px 0 10px rgba(59, 51, 35, 0.5);
     border-radius: 3px 32px 3px 32px;
     transform: scale(1.12);
 }
+
 .navbar #marka_isim:active {
     box-shadow: 0px 0 10px rgba(0, 255, 55, 0.9);
     color: #00C853;
     border-radius: 3px 32px 32px 32px;
 }
+
 .navbar #marka_isim h3 {
     margin: 5px 0 0 0;
     font-family: "Poppins", sans-serif;
@@ -101,6 +106,7 @@ header {
     color: #2c2c2c;
     transform: translate(0,-10px);
 }
+
 .navbar #arama {
     color: #2c2c2c;
     background: transparent;
@@ -110,17 +116,21 @@ header {
     top: 49px;
     z-index: 10;
 }
+
 .navbar #arama_simge{
     display: flex;
     font-size: 22px;
     transition: all ease-in-out 0.4s;
 }
+
 .navbar #arama_simge:hover{
     color: #ffa500;
 }
+
 .navbar #arama_simge:active{
     color: #00C853;
 }
+
 .navbar #cubuk {
     width: 100%;
     position: relative;
@@ -151,6 +161,7 @@ header {
     color: white;
     transition: all ease-in-out 0.2s;
 }
+
 .navbar #cubuk input:focus {
     border-color: #1e3a8a;
     box-shadow: 0 0 5px #1e3a8a;
@@ -166,19 +177,127 @@ header {
     box-shadow: 0 0 5px #ffa500;
     transition: all ease-in-out 0.2s;
 }
+
 .navbar #cubuk input:not(:hover) {
     transition: all ease-in-out 0.2s;
 }
+
 .navbar #arama,#cubuk{
     transform: translate(-35px,-9px);
 }
+
 .navbar #arama_cubugu input:active{
     border: 2px solid white;
     box-shadow: 0 0 5px #00C853;
     transition: all ease-in-out 0.5s;
 }
+
 .navbar #arama_cubugu input:not(:active){
     transition: all ease-in-out 0.5s;
+}
+
+/* Responsive adjustments for brand and search */
+@media (max-width: 1024px) {
+    .navbar #marka_isim {
+        width: 200px;
+        height: 70px;
+        font-size: 24px;
+        padding: 10px;
+    }
+    
+    .navbar #marka_isim h3 {
+        font-size: 20px;
+    }
+    
+    .navbar #marka_isim p {
+        font-size: 8px;
+    }
+    
+    .navbar #arama {
+        left: 350px;
+        top: 40px;
+    }
+    
+    .navbar #cubuk input {
+        width: 400px;
+        height: 45px;
+        font-size: 14px;
+        transform: translate(30px, 5px);
+        padding: 5px 15px 5px 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar #marka_isim {
+        width: 180px;
+        height: 60px;
+        font-size: 20px;
+        padding: 8px;
+    }
+    
+    .navbar #marka_isim h3 {
+        font-size: 18px;
+        transform: translate(0, -8px);
+    }
+    
+    .navbar #marka_isim p {
+        font-size: 7px;
+        transform: translate(0, -8px);
+    }
+    
+    .navbar #arama {
+        position: static;
+        transform: none;
+        margin-bottom: 5px;
+    }
+    
+    .navbar #cubuk {
+        margin: 0;
+        transform: none;
+    }
+    
+    .navbar #cubuk input {
+        width: 100%;
+        max-width: 300px;
+        height: 40px;
+        font-size: 14px;
+        transform: none;
+        padding: 5px 15px 5px 40px;
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .navbar #arama,#cubuk{
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar #marka_isim {
+        width: 100%;
+        max-width: 200px;
+        height: 50px;
+        font-size: 18px;
+        padding: 6px;
+        margin: 0 auto;
+    }
+    
+    .navbar #marka_isim h3 {
+        font-size: 16px;
+        transform: translate(0, -6px);
+    }
+    
+    .navbar #marka_isim p {
+        font-size: 6px;
+        transform: translate(0, -6px);
+    }
+    
+    .navbar #cubuk input {
+        max-width: 250px;
+        height: 35px;
+        font-size: 13px;
+        padding: 5px 10px 5px 35px;
+    }
 }
 
 .navbar #uclu_button {
@@ -205,8 +324,10 @@ header {
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     border: 2px solid white;
-    transition: all ease-in-out 0.3s;;
+    transition: all ease-in-out 0.3s;
+    font-size: 14px;
 }
+
 .navbar .sepet:hover,
 .navbar .favori:hover,
 .navbar .cikis:hover{
@@ -218,24 +339,29 @@ header {
     font-size: 19px;
     transform: scale(1.12);
 }
+
 .navbar .favori:hover{
     font-size: 18px !important; 
 }
+
 .navbar .sepet:active,
 .navbar .favori:active,
 .navbar .cikis:active{
     box-shadow: 0 0 5px #00C853;
     color: #00C853;
 }
+
 .navbar #sepet_logo, 
 .navbar #favori_logo,
 .navbar #cikis_yap_logo{
     padding: 0 4px 0 0;
 }
+
 a{
-    color: inherit;/* Önceki rengi neyse öyle kalmaya devam etsin */
+    color: inherit;
     text-decoration: none;
 }
+
 a:hover,
 a:focus,
 a:active{
@@ -243,6 +369,7 @@ a:active{
     text-decoration: none;
     outline: none;
 }
+
 .navbar #kullanici{
     width: 75px;
     height: 70px;
@@ -255,17 +382,20 @@ a:active{
     transform: translate(-6px,0);
     transition: all ease-in-out 0.3s;
 }
+
 .navbar #kullanici:hover{
     box-shadow: 5px 0 10px rgba(255, 165, 0, 0.5);
 }
+
 .navbar #kullanici:active{
     box-shadow: 0 0 5px #00C853;
 }
+
 .navbar #kullanici #adam img{
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    object-fit: cover; /*Resmi Kırpma İşlemi*/
+    object-fit: cover;
     border: 3px solid #00C853;
     box-shadow: 0 2px 4px  rgba(0, 0, 0, 0.1);
     padding: 1px 1px;
@@ -274,9 +404,10 @@ a:active{
     cursor: pointer;
     transition: all ease-in-out 0.3s;
 }
+
 .navbar #kullanici #adam img:hover{
     border-radius: 50%;
-    object-fit: cover; /*Resmi Kırpma İşlemi*/
+    object-fit: cover;
     border: 3px solid #66ff00;
     box-shadow: 0px 0px 2px 2px rgba(58, 109, 24, 0.);
     padding: 1px 1px;
@@ -284,9 +415,10 @@ a:active{
     height: 60px;
     filter: brightness(1);
 }
+
 .navbar #kullanici #adam img:active{
     border-radius: 50%;
-    object-fit: cover; /*Resmi Kırpma İşlemi*/
+    object-fit: cover;
     border: 3px solid #d900ff;
     box-shadow: 0 0 10px rgb(72, 0, 255);
     padding: 1px 1px;
@@ -295,9 +427,10 @@ a:active{
     height: 60px;
     filter: brightness(80%);
 }
+
 .navbar #kullanici #adam img:focus{
     border-radius: 50%;
-    object-fit: cover; /*Resmi Kırpma İşlemi*/
+    object-fit: cover;
     border: 3px solid #ff3e3e;
     box-shadow: 0px 0px 2px 2px rgba(255, 0, 0, 0.5);
     padding: 1px 1px;
@@ -306,9 +439,11 @@ a:active{
     height: 60px;
     filter: brightness(1);
 }
+
 .navbar #kullanici #adam{
     transform: translate(1px,9px);
 }
+
 .navbar #kullanici #adam h5{
     font-size: 12px;
     font-family: "Poppins",sans-serif;
@@ -318,12 +453,109 @@ a:active{
     margin: auto;
     color: transparent;
     transition: all ease-in-out 0.3s;
-    }
+}
+
 .navbar #kullanici #adam h5:hover{
     color: black;
     font-size: 14px;
     transition: all ease-in-out 0.3s;
     cursor: default;
+}
+
+/* Responsive adjustments for buttons and user profile */
+@media (max-width: 1024px) {
+    .navbar #uclu_button {
+        gap: 15px;
+    }
+    
+    .navbar .sepet,
+    .navbar .favori,
+    .navbar .cikis {
+        width: 110px;
+        height: 35px;
+        font-size: 12px;
+    }
+    
+    .navbar #kullanici {
+        width: 65px;
+        height: 65px;
+    }
+    
+    .navbar #kullanici #adam img {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navbar #uclu_button {
+        gap: 10px;
+        transform: none;
+        order: 2;
+        width: 100%;
+        justify-content: center;
+        margin-top: 10px;
+    }
+    
+    .navbar .sepet,
+    .navbar .favori,
+    .navbar .cikis {
+        width: 90px;
+        height: 30px;
+        font-size: 11px;
+    }
+    
+    .navbar #kullanici {
+        width: 55px;
+        height: 55px;
+        order: 3;
+    }
+    
+    .navbar #kullanici #adam img {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .navbar #kullanici #adam h5 {
+        font-size: 10px;
+    }
+    
+    .navbar #kullanici #adam h5:hover {
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar #uclu_button {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .navbar .sepet,
+    .navbar .favori,
+    .navbar .cikis {
+        width: 80px;
+        height: 28px;
+        font-size: 10px;
+    }
+    
+    .navbar #kullanici {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .navbar #kullanici #adam img {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .navbar #kullanici #adam h5 {
+        font-size: 8px;
+    }
+    
+    .navbar #kullanici #adam h5:hover {
+        font-size: 9px;
+    }
 }
 
 .nav_secenek{
