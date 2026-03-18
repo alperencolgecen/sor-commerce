@@ -214,20 +214,6 @@ Bu proje MIT lisansı altında dağıtılmaktadır. Detaylı bilgi için `LICENS
 
 - **Sorular**: GitHub Issues üzerinden sorularınızı iletebilirsiniz
 
-## 🌟 Yol Haritası
-
-- [x] ✅ Temel e-ticaret platformu
-- [x] ✅ Çoklu satıcı desteği
-- [x] ✅ Admin paneli
-- [x] ✅ Responsive tasarım
-- [x] ✅ API sistemi
-- [ ] 🔄 Mobil uygulama
-- [ ] 🔄 Çoklu dil desteği
-- [ ] 🔄 Gelişmiş raporlama
-- [ ] 🔄 Entegrasyon API'leri
-- [ ] 🔄 Pazar yerleri
-- [ ] 🔄 Abonelik sistemi
-
 ---
 
 **YOZ-Ticaret** - "Yozlaşmayacak Olan İçin" modern e-ticaret çözümünüz! 
