@@ -217,3 +217,12 @@ Bu proje MIT lisansı altında dağıtılmaktadır. Detaylı bilgi için `LICENS
 ---
 
 **YOZ-Ticaret** - "Yozlaşmayacak Olan İçin" modern e-ticaret çözümünüz! 
+
+
+
+
+<div align="center">
+
+Prepared by Alperen Çölgeçen
+
+</div> 
