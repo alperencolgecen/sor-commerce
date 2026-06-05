@@ -1,0 +1,71 @@
+.profile-page {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.profile-sidebar {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  height: fit-content;
+}
+
+.profile-avatar {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 12px;
+  border: 3px solid #F27A1A;
+}
+
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+.profile-sidebar h3 { font-size: 17px; font-weight: 600; color: #1D1D1D; }
+.profile-email { font-size: 13px; color: #666; margin-bottom: 20px; }
+
+.profile-menu { list-style: none; padding: 0; margin: 0; text-align: left; }
+.profile-menu li { margin-bottom: 2px; }
+.profile-menu a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 6px;
+  font-size: 14px; color: #666; text-decoration: none;
+  transition: all 0.2s;
+}
+.profile-menu a:hover, .profile-menu a.active { background: #FFF3E6; color: #F27A1A; }
+.profile-menu a i { width: 18px; color: #F27A1A; }
+
+.profile-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.profile-content h3 { font-size: 18px; font-weight: 600; color: #1D1D1D; margin-bottom: 24px; }
+
+.profile-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profile-form .form-group.full { grid-column: 1 / -1; }
+.profile-form .form-group label { display: block; font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 500; }
+.profile-form .form-group input,
+.profile-form .form-group textarea {
+  width: 100%; padding: 10px 14px; border: 1px solid #e8e8e8;
+  border-radius: 6px; font-size: 14px; color: #1D1D1D;
+  transition: border-color 0.2s;
+}
+.profile-form .form-group input:focus,
+.profile-form .form-group textarea:focus { border-color: #F27A1A; }
+.profile-form .form-group textarea { resize: vertical; }
+
+@media (max-width: 768px) {
+  .profile-page { grid-template-columns: 1fr; }
+  .profile-form { grid-template-columns: 1fr; }
+}

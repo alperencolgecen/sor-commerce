@@ -1,0 +1,232 @@
+.faq-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+  background: linear-gradient(180deg, #FFFBEB 0%, #fff 300px);
+}
+
+.faq-page .about-hero {
+  text-align: center;
+  padding: 48px 0 40px;
+  background: linear-gradient(135deg, #D97706, #B45309);
+  margin: -24px -16px 24px;
+  position: relative;
+  border-radius: 0;
+}
+
+.faq-page .about-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: #FFFBEB;
+  border-radius: 50% 50% 0 0;
+}
+
+.faq-page .about-hero h1 {
+  font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px;
+}
+
+.faq-page .about-hero h1 span { color: #FDE68A; }
+.faq-page .about-hero p { font-size: 14px; color: rgba(255,255,255,0.85); max-width: 500px; margin: 0 auto; }
+
+.faq-search {
+  position: relative;
+  max-width: 600px;
+  margin: 32px auto;
+}
+
+.faq-search i {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #999;
+}
+
+.faq-search input {
+  width: 100%;
+  height: 50px;
+  padding: 0 20px 0 46px;
+  border: 2px solid #FDE68A;
+  border-radius: 25px;
+  font-size: 15px;
+  transition: border-color 0.2s;
+  background: #fff;
+}
+
+.faq-search input:focus {
+  outline: none;
+  border-color: #D97706;
+  box-shadow: 0 0 0 3px rgba(217,119,6,0.1);
+}
+
+.faq-category {
+  margin-bottom: 36px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #FEF3C7;
+}
+
+.faq-category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #D97706;
+}
+
+.faq-category-header i {
+  font-size: 22px;
+  color: #D97706;
+  width: 40px;
+  height: 40px;
+  background: #FFFBEB;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.faq-category-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1D1D1D;
+  margin: 0;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.faq-item {
+  background: #FFFBEB;
+  border-radius: 8px;
+  border: 1px solid #FEF3C7;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.faq-item:hover {
+  box-shadow: 0 2px 8px rgba(217,119,6,0.08);
+}
+
+.faq-item[open] {
+  border-color: #D97706;
+  background: #fff;
+}
+
+.faq-question {
+  padding: 16px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1D1D1D;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  list-style: none;
+}
+
+.faq-question i {
+  font-size: 12px;
+  color: #D97706;
+  transition: transform 0.2s;
+}
+
+.faq-item[open] .faq-question i {
+  transform: rotate(180deg);
+  color: #D97706;
+}
+
+.faq-answer {
+  padding: 0 20px 16px;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.7;
+  border-top: 1px solid #FEF3C7;
+  padding-top: 12px;
+}
+
+.faq-answer p {
+  margin: 0;
+}
+
+.faq-contact {
+  text-align: center;
+  padding: 48px 20px;
+  margin-top: 32px;
+  background: linear-gradient(135deg, #D97706, #B45309);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.faq-contact::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+}
+
+.faq-contact h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+  position: relative;
+}
+
+.faq-contact p {
+  color: rgba(255,255,255,0.8);
+  margin: 0 0 24px;
+  position: relative;
+}
+
+.faq-contact-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.faq-contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+  background: #fff;
+  color: #D97706;
+}
+
+.faq-contact-btn:hover {
+  background: #FFFBEB;
+  transform: translateY(-2px);
+}
+
+.faq-contact-btn.outline {
+  background: transparent;
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.5);
+}
+
+.faq-contact-btn.outline:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
+}

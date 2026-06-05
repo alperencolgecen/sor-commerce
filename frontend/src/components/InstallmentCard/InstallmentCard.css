@@ -1,0 +1,105 @@
+.installment-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.installment-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+.installment-img-wrap {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: #FAFAFA;
+}
+
+.installment-img-wrap img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  transition: transform 0.3s;
+}
+
+.installment-card:hover .installment-img-wrap img {
+  transform: scale(1.05);
+}
+
+.installment-body {
+  padding: 16px;
+}
+
+.installment-name {
+  font-size: 14px;
+  color: #1D1D1D;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.installment-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1D1D1D;
+  margin-bottom: 8px;
+}
+
+.installment-info {
+  font-size: 12px;
+  color: #28A745;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.installment-monthly {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  background: #FFF3E6;
+  border-radius: 6px;
+}
+
+.installment-monthly-label {
+  font-size: 12px;
+  color: #666;
+}
+
+.installment-monthly-price {
+  font-size: 14px;
+  font-weight: 700;
+  color: #F27A1A;
+}
+
+.installment-btn {
+  width: 100%;
+  padding: 10px;
+  background: #F27A1A;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.installment-btn:hover {
+  background: #E06E0F;
+}

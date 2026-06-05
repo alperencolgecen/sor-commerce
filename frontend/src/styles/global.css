@@ -1,0 +1,66 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #F27A1A;
+  --primary-hover: #E06E0F;
+  --primary-light: #FFF3E6;
+  --bg: #F5F5F5;
+  --card-bg: #FFFFFF;
+  --text: #1D1D1D;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --border: #E8E8E8;
+  --success: #28A745;
+  --danger: #DC3545;
+  --star: #F27A1A;
+  --header-bg: #FFFFFF;
+  --footer-bg: #1D1D1D;
+  --footer-text: #CCCCCC;
+  --max-width: 1240px;
+  --header-height: 64px;
+  --shadow-card: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,0.12);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font-family: inherit; }
+input, textarea, select { font-family: inherit; outline: none; }
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px;
+  width: 100%;
+}
+
+.main-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 16px;
+  padding-top: calc(var(--header-height) + 48px + 16px);
+  min-height: 80vh;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .main-content { padding-top: calc(var(--header-height) + 8px); }
+}

@@ -1,0 +1,26 @@
+.login-page-admin {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; background: var(--bg);
+}
+
+.login-card-admin {
+  background: var(--card); border-radius: 10px; padding: 40px 36px;
+  width: 100%; max-width: 380px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border: 1px solid var(--border);
+}
+
+.login-logo-admin { text-align: center; margin-bottom: 28px; }
+.login-logo-admin img { width: 56px; height: 56px; border-radius: 12px; margin-bottom: 10px; }
+.login-logo-admin h2 { font-size: 20px; font-weight: 700; }
+.login-logo-admin h2 span { color: var(--primary); }
+.login-logo-admin p { font-size: 13px; color: var(--text-sec); margin-top: 4px; }
+
+.login-card-admin .form-group { margin-bottom: 16px; }
+.login-card-admin label { display: block; font-size: 13px; margin-bottom: 6px; color: var(--text-sec); font-weight: 500; }
+
+.login-error-admin {
+  padding: 8px 12px; background: #fef2f2; border: 1px solid #fecaca;
+  border-radius: 6px; font-size: 13px; color: var(--danger); margin-bottom: 12px;
+}
+
+.login-btn-admin { width: 100%; justify-content: center; padding: 11px; font-size: 14px; }
