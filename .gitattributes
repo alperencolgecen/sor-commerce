@@ -1,0 +1,4 @@
+*.csproj linguist-language=C#
+*.sln linguist-language=C#
+admin/** linguist-detectable=false
+frontend/** linguist-detectable=false
