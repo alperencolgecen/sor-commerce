@@ -9,13 +9,21 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!email || !password) { setError('Lütfen tüm alanları doldurun'); return; }
-    login(email, password);
-    navigate('/');
+    setLoading(true);
+    try {
+      await login(email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -40,7 +48,9 @@ export default function Login() {
             <label><input type="checkbox" defaultChecked /> Beni Hatırla</label>
             <a href="#">Şifremi Unuttum</a>
           </div>
-          <button type="submit" className="login-submit">Giriş Yap</button>
+          <button type="submit" className="login-submit" disabled={loading}>
+            {loading ? <><i className="fas fa-spinner fa-spin" /> Giriş yapılıyor...</> : 'Giriş Yap'}
+          </button>
         </form>
         <div className="login-divider"><span>veya</span></div>
         <div className="social-login">

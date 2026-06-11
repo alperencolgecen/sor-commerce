@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { loginApi, registerApi } from '../api/authApi';
 
 const AuthContext = createContext();
 
@@ -12,21 +13,27 @@ export function AuthProvider({ children }) {
     } catch { /* ignore */ }
   }, []);
 
-  const login = (email, password) => {
+  const login = async (email, password) => {
+    const data = await loginApi(email, password);
     const userData = {
-      id: 1,
-      name: email.split('@')[0],
-      fullName: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
-      email,
-      avatar: '/IMG/bg/SORGUN-Ticaret_logo.png',
+      id: data.id,
+      name: data.ad,
+      fullName: data.ad,
+      email: data.email,
     };
     setUser(userData);
     localStorage.setItem('sor-user', JSON.stringify(userData));
     return true;
   };
 
-  const register = (name, email, password) => {
-    const userData = { id: Date.now(), name, fullName: name, email, avatar: '/IMG/bg/SORGUN-Ticaret_logo.png' };
+  const register = async (name, email, password) => {
+    const data = await registerApi(name, email, password);
+    const userData = {
+      id: data.id,
+      name: data.ad,
+      fullName: data.ad,
+      email: data.email,
+    };
     setUser(userData);
     localStorage.setItem('sor-user', JSON.stringify(userData));
     return true;

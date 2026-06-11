@@ -11,15 +11,23 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!name || !email || !password || !confirm) { setError('Lütfen tüm alanları doldurun'); return; }
     if (password.length < 6) { setError('Şifre en az 6 karakter olmalıdır'); return; }
     if (password !== confirm) { setError('Şifreler eşleşmiyor'); return; }
-    register(name, email, password);
-    navigate('/');
+    setLoading(true);
+    try {
+      await register(name, email, password);
+      navigate('/');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,7 +56,9 @@ export default function Register() {
             <input type="password" placeholder="••••••••" value={confirm} onChange={e => setConfirm(e.target.value)} />
           </div>
           {error && <div className="login-error"><i className="fas fa-exclamation-circle" /> {error}</div>}
-          <button type="submit" className="login-submit">Kayıt Ol</button>
+          <button type="submit" className="login-submit" disabled={loading}>
+            {loading ? <><i className="fas fa-spinner fa-spin" /> Kaydediliyor...</> : 'Kayıt Ol'}
+          </button>
         </form>
         <div className="login-divider"><span>veya</span></div>
         <div className="social-login">
