@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { FavoritesProvider } from './context/FavoritesContext';
 import { SearchProvider } from './context/SearchContext';
+import { ToastProvider } from './context/ToastContext';
 import ScrollToTop from './components/ScrollToTop/ScrollToTop';
 import Header from './components/Header/Header';
 import SecondaryNav from './components/SecondaryNav/SecondaryNav';
@@ -40,6 +41,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <ToastProvider>
       <AuthProvider>
         <SearchProvider>
           <FavoritesProvider>
@@ -82,6 +84,7 @@ export default function App() {
           </FavoritesProvider>
         </SearchProvider>
       </AuthProvider>
+      </ToastProvider>
     </BrowserRouter>
   );
 }

@@ -194,3 +194,8 @@
   background: #ccc;
   cursor: not-allowed;
 }
+
+.product-add-btn.flash {
+  background: #22c55e !important;
+  pointer-events: none;
+}

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
@@ -6,6 +7,7 @@ import './ProductCard.css';
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [flash, setFlash] = useState(false);
   const {
     id, name, price, discountPrice, discountPercent, rating,
     reviewCount, image, freeShipping, inStock, urunTuru,
@@ -14,6 +16,14 @@ export default function ProductCard({ product }) {
   const displayPrice = discountPrice || price;
   const taksitCount = taksitSayisi || 0;
   const taksitAylik = taksitAylikFiyat || 0;
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    if (!inStock) return;
+    addToCart(product);
+    setFlash(true);
+    setTimeout(() => setFlash(false), 1200);
+  };
 
   return (
     <div className="product-card">
@@ -69,11 +79,15 @@ export default function ProductCard({ product }) {
         )}
 
         <button
-          className={`product-add-btn ${!inStock ? 'disabled' : ''}`}
+          className={`product-add-btn ${!inStock ? 'disabled' : ''} ${flash ? 'flash' : ''}`}
           disabled={!inStock}
-          onClick={() => inStock && addToCart(product)}
+          onClick={handleAddToCart}
         >
-          {inStock ? <><i className="fas fa-shopping-cart" /> Sepete Ekle</> : 'Stokta Yok'}
+          {flash ? (
+            <><i className="fas fa-check" /> Eklendi</>
+          ) : inStock ? (
+            <><i className="fas fa-shopping-cart" /> Sepete Ekle</>
+          ) : 'Stokta Yok'}
         </button>
       </div>
     </div>

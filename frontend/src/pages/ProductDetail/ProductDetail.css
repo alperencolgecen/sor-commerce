@@ -130,6 +130,7 @@
 
 .detail-add-btn:hover { background: #E06E0F; }
 .detail-add-btn.disabled { background: #ccc; cursor: not-allowed; }
+.detail-add-btn.flash { background: #22c55e !important; pointer-events: none; }
 
 .detail-fav-btn {
   width: 48px;

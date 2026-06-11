@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
+import { useToast } from './ToastContext';
 
 const CartContext = createContext();
 
@@ -35,7 +36,14 @@ export function CartProvider({ children }) {
     localStorage.setItem('sor-cart', JSON.stringify(state.items));
   }, [state.items]);
 
-  const addToCart = (product) => dispatch({ type: 'ADD', product });
+  const { showToast } = useToast();
+
+  const addToCart = (product) => {
+    dispatch({ type: 'ADD', product });
+    const name = product.name?.length > 40 ? product.name.slice(0, 40) + '...' : product.name;
+    showToast(`${name} sepete eklendi`, 'success', 3000);
+  };
+
   const removeFromCart = (id) => dispatch({ type: 'REMOVE', id });
   const updateQty = (id, qty) => dispatch({ type: 'UPDATE_QTY', id, qty });
   const clearCart = () => dispatch({ type: 'CLEAR' });

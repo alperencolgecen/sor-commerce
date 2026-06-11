@@ -16,6 +16,7 @@ export default function ProductDetail() {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [btnFlash, setBtnFlash] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -106,11 +107,16 @@ export default function ProductDetail() {
 
           <div className="detail-actions">
             <button
-              className={`detail-add-btn ${!inStock ? 'disabled' : ''}`}
+              className={`detail-add-btn ${!inStock ? 'disabled' : ''} ${btnFlash ? 'flash' : ''}`}
               disabled={!inStock}
-              onClick={() => inStock && addToCart(product)}
+              onClick={() => {
+                if (!inStock) return;
+                addToCart(product);
+                setBtnFlash(true);
+                setTimeout(() => setBtnFlash(false), 1200);
+              }}
             >
-              {inStock ? <><i className="fas fa-shopping-cart" /> Sepete Ekle</> : 'Stokta Yok'}
+              {btnFlash ? <><i className="fas fa-check" /> Eklendi</> : inStock ? <><i className="fas fa-shopping-cart" /> Sepete Ekle</> : 'Stokta Yok'}
             </button>
             <button
               className={`detail-fav-btn ${isFavorite(numericId) ? 'active' : ''}`}
