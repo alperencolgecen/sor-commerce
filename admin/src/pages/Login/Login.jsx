@@ -10,11 +10,12 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (!username || !password) { setError('Kullanıcı adı ve şifre gerekli'); return; }
-    if (login(username, password)) navigate('/admin');
+    const ok = await login(username, password);
+    if (ok) navigate('/admin');
     else setError('Kullanıcı adı veya şifre hatalı');
   };
 
