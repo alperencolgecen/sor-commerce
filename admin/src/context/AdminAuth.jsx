@@ -9,7 +9,15 @@ export function AdminAuthProvider({ children }) {
 
   useEffect(() => {
     const saved = localStorage.getItem('sor-admin');
-    if (saved) setAdmin(JSON.parse(saved));
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.token) setAdmin(parsed);
+        else localStorage.removeItem('sor-admin');
+      } catch {
+        localStorage.removeItem('sor-admin');
+      }
+    }
   }, []);
 
   const login = async (username, password) => {

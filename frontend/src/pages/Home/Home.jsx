@@ -1,14 +1,24 @@
+import { useState, useEffect } from 'react';
 import HeroSection from '../../components/HeroSection/HeroSection';
 import FeaturesBar from '../../components/FeaturesBar/FeaturesBar';
 import CampaignGrid from '../../components/CampaignGrid/CampaignGrid';
 import TopCategories from '../../components/TopCategories/TopCategories';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import InstallmentCard from '../../components/InstallmentCard/InstallmentCard';
-import { products } from '../../data/products';
+import { getProducts } from '../../api/urunApi';
+import { products as fallbackProducts } from '../../data/products';
 
 export default function Home() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    getProducts()
+      .then(setProducts)
+      .catch(() => setProducts(fallbackProducts));
+  }, []);
+
   const populer = products.filter(p => p.id <= 8);
-  const taksitli = products.filter(p => p.installment && p.installment.count >= 6);
+  const taksitli = products.filter(p => (p.taksitSayisi || p.installment?.count || 0) >= 6);
 
   return (
     <>

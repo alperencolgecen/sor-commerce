@@ -1,11 +1,23 @@
-import { products } from '../../data/products';
+import { useState, useEffect } from 'react';
+import { getProducts } from '../../api/urunApi';
+import { products as fallback } from '../../data/products';
 import ProductCard from '../ProductCard/ProductCard';
 import './SimilarProducts.css';
 
 export default function SimilarProducts({ currentId, category }) {
-  const list = products.filter(p => p.category === category && p.id !== currentId).slice(0, 6);
+  const [items, setItems] = useState([]);
 
-  if (list.length === 0) return null;
+  useEffect(() => {
+    getProducts()
+      .then(data => {
+        setItems(data.filter(p => p.category === category && p.id !== currentId).slice(0, 6));
+      })
+      .catch(() => {
+        setItems(fallback.filter(p => p.category === category && p.id !== currentId).slice(0, 6));
+      });
+  }, [currentId, category]);
+
+  if (items.length === 0) return null;
 
   return (
     <section className="section">
@@ -13,7 +25,7 @@ export default function SimilarProducts({ currentId, category }) {
         <h2>Benzer <span>Ürünler</span></h2>
       </div>
       <div className="product-grid">
-        {list.map(p => <ProductCard key={p.id} product={p} />)}
+        {items.map(p => <ProductCard key={p.id} product={p} />)}
       </div>
     </section>
   );

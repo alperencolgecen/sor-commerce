@@ -1,22 +1,22 @@
+import { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import ProductCard from '../../components/ProductCard/ProductCard';
-import Skeleton from '../../components/Skeleton/Skeleton';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import { useFilter } from '../../hooks/useFilter';
-import { products } from '../../data/products';
+import { getProducts } from '../../api/urunApi';
+import { products as fallbackProducts } from '../../data/products';
 import './Products.css';
 
 const categories = [
   { value: '', label: 'Tümü' },
   { value: 'elektronik', label: 'Elektronik' },
-  { value: 'moda', label: 'Moda' },
+  { value: 'kadin', label: 'Kadın' },
+  { value: 'erkek', label: 'Erkek' },
   { value: 'ev-yasam', label: 'Ev & Yaşam' },
   { value: 'kozmetik', label: 'Kozmetik' },
-  { value: 'kitap-hobi', label: 'Kitap & Hobi' },
   { value: 'spor-outdoor', label: 'Spor & Outdoor' },
 ];
 
-const brands = [...new Set(products.map(p => p.brand))];
 const sortOptions = [
   { value: 'populer', label: 'En Popüler' },
   { value: 'artan', label: 'Artan Fiyat' },
@@ -26,7 +26,16 @@ const sortOptions = [
 ];
 
 export default function Products() {
-  const { filters, setFilter, clearFilters, filteredProducts } = useFilter();
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    getProducts()
+      .then(setProducts)
+      .catch(() => setProducts(fallbackProducts));
+  }, []);
+
+  const { filters, setFilter, clearFilters, filteredProducts } = useFilter(products);
+  const brands = [...new Set(products.map(p => p.brand).filter(Boolean))];
 
   return (
     <>
@@ -57,13 +66,15 @@ export default function Products() {
             </div>
           </div>
 
-          <div className="filter-group">
-            <h4>Marka</h4>
-            <select value={filters.brand} onChange={e => setFilter('marka', e.target.value)}>
-              <option value="">Tümü</option>
-              {brands.map(b => <option key={b} value={b}>{b}</option>)}
-            </select>
-          </div>
+          {brands.length > 0 && (
+            <div className="filter-group">
+              <h4>Marka</h4>
+              <select value={filters.brand} onChange={e => setFilter('marka', e.target.value)}>
+                <option value="">Tümü</option>
+                {brands.map(b => <option key={b} value={b}>{b}</option>)}
+              </select>
+            </div>
+          )}
 
           <div className="filter-group">
             <h4>Değerlendirme</h4>

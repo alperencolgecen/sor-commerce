@@ -1,5 +1,7 @@
+import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { products } from '../data/products';
+import { getProductsByCategory } from '../api/urunApi';
+import { getProducts } from '../api/urunApi';
 import ProductCard from '../components/ProductCard/ProductCard';
 import CategoryHeader from '../components/CategoryHeader/CategoryHeader';
 import EmptyState from '../components/EmptyState/EmptyState';
@@ -7,10 +9,22 @@ import './CategoryPage.css';
 
 export default function CategoryPage({ title, slug, description }) {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getProductsByCategory(slug)
+      .then(setProducts)
+      .catch(() => {
+        getProducts().then(all => setProducts(all.filter(p => p.category === slug)));
+      })
+      .finally(() => setLoading(false));
+  }, [slug]);
+
   const activeSub = searchParams.get('alt');
-  const filtered = products.filter(p => p.category === slug);
-  const subs = [...new Set(filtered.map(p => p.subcategory).filter(Boolean))];
-  const displayed = activeSub ? filtered.filter(p => p.subcategory === activeSub) : filtered;
+  const subs = [...new Set(products.map(p => p.subcategory).filter(Boolean))];
+  const displayed = activeSub ? products.filter(p => p.subcategory === activeSub) : products;
 
   const setSub = (sub) => {
     if (sub) searchParams.set('alt', sub);
@@ -18,7 +32,16 @@ export default function CategoryPage({ title, slug, description }) {
     setSearchParams(searchParams);
   };
 
-  if (filtered.length === 0) {
+  if (loading) {
+    return (
+      <>
+        <CategoryHeader title={title} slug={slug} count={0} />
+        <div style={{ textAlign: 'center', padding: 40 }}>Yükleniyor...</div>
+      </>
+    );
+  }
+
+  if (products.length === 0) {
     return (
       <>
         <CategoryHeader title={title} slug={slug} count={0} />
@@ -29,7 +52,7 @@ export default function CategoryPage({ title, slug, description }) {
 
   return (
     <>
-      <CategoryHeader title={title} slug={slug} count={filtered.length} description={description} />
+      <CategoryHeader title={title} slug={slug} count={products.length} description={description} />
 
       {subs.length > 0 && (
         <div className="sub-tabs">

@@ -1,18 +1,33 @@
+import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { products } from '../../data/products';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 import AlsoBought from '../../components/AlsoBought/AlsoBought';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import { getProductById } from '../../api/urunApi';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const numericId = Number(id);
   const { addToCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const product = products.find(p => p.id === Number(id));
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    getProductById(Number(id))
+      .then(setProduct)
+      .catch(() => setProduct(null))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', padding: 60 }}>Yükleniyor...</div>;
+  }
 
   if (!product) {
     return <EmptyState icon="fas fa-exclamation-triangle" title="Ürün Bulunamadı" message="Aradığınız ürün mevcut değil." />;
@@ -21,10 +36,10 @@ export default function ProductDetail() {
   const {
     name, price, discountPrice, discountPercent, rating, reviewCount,
     category, brand, image, installment, freeShipping, inStock,
-    description, aciklama, urunTuru, taksitSayisi, taksitAylikFiyat
+    aciklama, urunTuru, taksitSayisi, taksitAylikFiyat
   } = product;
   const displayPrice = discountPrice || price;
-  const productDesc = aciklama || description || `${name} modeli, ${brand} kalitesiyle sizlerle.`;
+  const productDesc = aciklama || `${name} modeli, ${brand} kalitesiyle sizlerle.`;
   const taksitCount = taksitSayisi || installment?.count || 0;
   const taksitAylik = taksitAylikFiyat || installment?.monthlyPrice || 0;
 
@@ -48,7 +63,7 @@ export default function ProductDetail() {
           </div>
         </div>
 
-          <div className="detail-info">
+        <div className="detail-info">
           <div className="detail-brand">
             {brand}
             {urunTuru && urunTuru !== 'Standart' && (
@@ -69,7 +84,7 @@ export default function ProductDetail() {
           <div className="detail-price-section">
             <div className="detail-price">
               <span className="detail-current">{displayPrice.toLocaleString('tr-TR')} TL</span>
-              {discountPrice && <span className="detail-old">{price.toLocaleString('tr-TR')} TL</span>}
+              {discountPrice > 0 && <span className="detail-old">{price.toLocaleString('tr-TR')} TL</span>}
               {discountPercent > 0 && <span className="detail-badge">-%{discountPercent}</span>}
             </div>
             {taksitCount > 0 && (
@@ -98,11 +113,11 @@ export default function ProductDetail() {
               {inStock ? <><i className="fas fa-shopping-cart" /> Sepete Ekle</> : 'Stokta Yok'}
             </button>
             <button
-              className={`detail-fav-btn ${isFavorite(id) ? 'active' : ''}`}
+              className={`detail-fav-btn ${isFavorite(numericId) ? 'active' : ''}`}
               onClick={() => toggleFavorite(product)}
+              title={isFavorite(numericId) ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
             >
               <i className={`${isFavorite(id) ? 'fas' : 'far'} fa-heart`} />
-              {isFavorite(id) ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
             </button>
           </div>
 

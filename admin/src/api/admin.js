@@ -2,7 +2,13 @@ const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 function getToken() {
   const t = localStorage.getItem('sor-admin');
-  return t ? JSON.parse(t).token : null;
+  if (!t) return null;
+  try {
+    const parsed = JSON.parse(t);
+    return parsed.token || null;
+  } catch {
+    return null;
+  }
 }
 
 function headers(isFormData) {
@@ -13,8 +19,17 @@ function headers(isFormData) {
   return h;
 }
 
+function handle401(res) {
+  if (res.status === 401) {
+    localStorage.removeItem('sor-admin');
+    window.location.href = '/admin/login';
+  }
+  return res;
+}
+
 async function get(endpoint) {
   const res = await fetch(`${BASE}${endpoint}`, { headers: headers() });
+  handle401(res);
   if (!res.ok) throw new Error('API Error');
   return res.json();
 }
@@ -26,6 +41,7 @@ async function post(endpoint, data) {
     headers: headers(isFormData),
     body: data,
   });
+  handle401(res);
   if (!res.ok) throw new Error('API Error');
   const text = await res.text();
   return text ? JSON.parse(text) : null;
@@ -38,6 +54,7 @@ async function put(endpoint, data) {
     headers: headers(isFormData),
     body: data,
   });
+  handle401(res);
   if (!res.ok) throw new Error('API Error');
   return res;
 }
@@ -47,6 +64,7 @@ async function del(endpoint) {
     method: 'DELETE',
     headers: headers(),
   });
+  handle401(res);
   if (!res.ok) throw new Error('API Error');
   return res;
 }

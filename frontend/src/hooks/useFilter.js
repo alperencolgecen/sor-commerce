@@ -1,8 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { useMemo } from 'react';
-import { products } from '../data/products';
 
-export function useFilter() {
+export function useFilter(products = []) {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const filters = {
@@ -33,7 +32,7 @@ export function useFilter() {
       if (filters.minPrice && (p.discountPrice || p.price) < Number(filters.minPrice)) return false;
       if (filters.maxPrice && (p.discountPrice || p.price) > Number(filters.maxPrice)) return false;
       if (filters.minRating && p.rating < Number(filters.minRating)) return false;
-      if (filters.search && !p.name.toLowerCase().includes(filters.search.toLowerCase())) return false;
+      if (filters.search && !p.name?.toLowerCase().includes(filters.search.toLowerCase())) return false;
       if (filters.inStock && !p.inStock) return false;
       if (filters.freeShipping && !p.freeShipping) return false;
       return true;
@@ -48,7 +47,7 @@ export function useFilter() {
         default: return 0;
       }
     });
-  }, [filters]);
+  }, [products, filters]);
 
   return { filters, setFilter, clearFilters, filteredProducts };
 }
