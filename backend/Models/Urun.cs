@@ -24,6 +24,9 @@ public class Urun
     public string AltKategori { get; set; }
 
     [MaxLength(100)]
+    public string UrunTuru { get; set; }
+
+    [MaxLength(100)]
     public string Marka { get; set; }
 
     [MaxLength(500)]
@@ -31,4 +34,10 @@ public class Urun
 
     public bool UcretsizKargo { get; set; }
     public bool Stokta { get; set; }
+
+    public int TaksitSayisi { get; set; }
+    public decimal TaksitAylikFiyat { get; set; }
+
+    [MaxLength(2000)]
+    public string Aciklama { get; set; }
 }

@@ -12,7 +12,12 @@ namespace backend.Controllers.Admin;
 public class UrunController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public UrunController(AppDbContext context) => _context = context;
+    private readonly IWebHostEnvironment _env;
+    public UrunController(AppDbContext context, IWebHostEnvironment env)
+    {
+        _context = context;
+        _env = env;
+    }
 
     [HttpGet]
     public async Task<IActionResult> GetAll() => Ok(await _context.Urunler.ToListAsync());
@@ -25,17 +30,37 @@ public class UrunController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(Urun urun)
+    public async Task<IActionResult> Create([FromForm] Urun urun, IFormFile? gorselDosya)
     {
+        if (gorselDosya != null)
+            urun.Gorsel = await SaveImage(gorselDosya);
+
+        urun.IndirimYuzde = urun.Fiyat > 0 && urun.IndirimFiyat > 0
+            ? (int)Math.Round((1 - (double)urun.IndirimFiyat / (double)urun.Fiyat) * 100)
+            : 0;
+
         _context.Urunler.Add(urun);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = urun.Id }, urun);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Urun urun)
+    public async Task<IActionResult> Update(int id, [FromForm] Urun urun, IFormFile? gorselDosya)
     {
         if (id != urun.Id) return BadRequest();
+
+        var existing = await _context.Urunler.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
+        if (existing == null) return NotFound();
+
+        if (gorselDosya != null)
+            urun.Gorsel = await SaveImage(gorselDosya);
+        else
+            urun.Gorsel = existing.Gorsel;
+
+        urun.IndirimYuzde = urun.Fiyat > 0 && urun.IndirimFiyat > 0
+            ? (int)Math.Round((1 - (double)urun.IndirimFiyat / (double)urun.Fiyat) * 100)
+            : 0;
+
         _context.Entry(urun).State = EntityState.Modified;
         await _context.SaveChangesAsync();
         return NoContent();
@@ -49,5 +74,19 @@ public class UrunController : ControllerBase
         _context.Urunler.Remove(urun);
         await _context.SaveChangesAsync();
         return NoContent();
+    }
+
+    private async Task<string> SaveImage(IFormFile file)
+    {
+        var uploads = Path.Combine(_env.WebRootPath, "uploads");
+        if (!Directory.Exists(uploads)) Directory.CreateDirectory(uploads);
+
+        var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(file.FileName)}";
+        var filePath = Path.Combine(uploads, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+            await file.CopyToAsync(stream);
+
+        return $"/uploads/{fileName}";
     }
 }

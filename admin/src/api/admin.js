@@ -1,47 +1,54 @@
-import { products } from '../../frontend/src/data/products';
+const BASE = 'http://localhost:5000';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+function getToken() {
+  const t = localStorage.getItem('sor-admin');
+  return t ? JSON.parse(t).token : null;
+}
+
+function headers(isFormData) {
+  const h = {};
+  const token = getToken();
+  if (token) h['Authorization'] = `Bearer ${token}`;
+  if (!isFormData) h['Content-Type'] = 'application/json';
+  return h;
+}
 
 async function get(endpoint) {
-  const token = localStorage.getItem('sor-admin');
-  const res = await fetch(`${BASE}${endpoint}`, {
-    headers: token ? { Authorization: `Bearer ${JSON.parse(token).token}` } : {},
-  });
+  const res = await fetch(`${BASE}${endpoint}`, { headers: headers() });
   if (!res.ok) throw new Error('API Error');
   return res.json();
 }
 
 async function post(endpoint, data) {
-  const token = localStorage.getItem('sor-admin');
+  const isFormData = data instanceof FormData;
   const res = await fetch(`${BASE}${endpoint}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${JSON.parse(token).token}` } : {}) },
-    body: JSON.stringify(data),
+    headers: headers(isFormData),
+    body: data,
   });
   if (!res.ok) throw new Error('API Error');
-  return res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function put(endpoint, data) {
-  const token = localStorage.getItem('sor-admin');
+  const isFormData = data instanceof FormData;
   const res = await fetch(`${BASE}${endpoint}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${JSON.parse(token).token}` } : {}) },
-    body: JSON.stringify(data),
+    headers: headers(isFormData),
+    body: data,
   });
   if (!res.ok) throw new Error('API Error');
-  return res.json();
+  return res;
 }
 
 async function del(endpoint) {
-  const token = localStorage.getItem('sor-admin');
   const res = await fetch(`${BASE}${endpoint}`, {
     method: 'DELETE',
-    headers: token ? { Authorization: `Bearer ${JSON.parse(token).token}` } : {},
+    headers: headers(),
   });
   if (!res.ok) throw new Error('API Error');
-  return res.json();
+  return res;
 }
 
-export { BASE, products };
 export default { get, post, put, del };

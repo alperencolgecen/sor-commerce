@@ -18,8 +18,15 @@ export default function ProductDetail() {
     return <EmptyState icon="fas fa-exclamation-triangle" title="Ürün Bulunamadı" message="Aradığınız ürün mevcut değil." />;
   }
 
-  const { name, price, discountPrice, discountPercent, rating, reviewCount, category, brand, image, installment, freeShipping, inStock, description } = product;
+  const {
+    name, price, discountPrice, discountPercent, rating, reviewCount,
+    category, brand, image, installment, freeShipping, inStock,
+    description, aciklama, urunTuru, taksitSayisi, taksitAylikFiyat
+  } = product;
   const displayPrice = discountPrice || price;
+  const productDesc = aciklama || description || `${name} modeli, ${brand} kalitesiyle sizlerle.`;
+  const taksitCount = taksitSayisi || installment?.count || 0;
+  const taksitAylik = taksitAylikFiyat || installment?.monthlyPrice || 0;
 
   const catName = {
     kadin: 'Kadın', erkek: 'Erkek', 'anne-cocuk': 'Anne & Çocuk', 'ev-yasam': 'Ev & Yaşam',
@@ -41,8 +48,13 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        <div className="detail-info">
-          <div className="detail-brand">{brand}</div>
+          <div className="detail-info">
+          <div className="detail-brand">
+            {brand}
+            {urunTuru && urunTuru !== 'Standart' && (
+              <span className="detail-type-badge">{urunTuru}</span>
+            )}
+          </div>
           <h1 className="detail-title">{name}</h1>
 
           <div className="detail-rating">
@@ -60,10 +72,10 @@ export default function ProductDetail() {
               {discountPrice && <span className="detail-old">{price.toLocaleString('tr-TR')} TL</span>}
               {discountPercent > 0 && <span className="detail-badge">-%{discountPercent}</span>}
             </div>
-            {installment && (
+            {taksitCount > 0 && (
               <div className="detail-installment">
                 <i className="fas fa-credit-card" />
-                <span>{installment.count} taksit seçeneği <strong>{installment.monthlyPrice.toLocaleString('tr-TR')} TL / ay</strong></span>
+                <span>{taksitCount} taksit seçeneği <strong>{taksitAylik.toLocaleString('tr-TR')} TL / ay</strong></span>
               </div>
             )}
           </div>
@@ -96,7 +108,7 @@ export default function ProductDetail() {
 
           <div className="detail-desc">
             <h4>Ürün Açıklaması</h4>
-            <p>{description || `${name} modeli, ${brand} kalitesiyle sizlerle. En kaliteli malzemelerden üretilmiştir.`}</p>
+            <p>{productDesc}</p>
           </div>
         </div>
       </div>

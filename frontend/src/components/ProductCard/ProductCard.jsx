@@ -6,13 +6,28 @@ import './ProductCard.css';
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { isFavorite, toggleFavorite } = useFavorites();
-  const { id, name, price, discountPrice, discountPercent, rating, reviewCount, image, freeShipping, inStock } = product;
+  const {
+    id, name, price, discountPrice, discountPercent, rating,
+    reviewCount, image, freeShipping, inStock, urunTuru,
+    taksitSayisi, taksitAylikFiyat
+  } = product;
   const displayPrice = discountPrice || price;
+  const taksitCount = taksitSayisi || 0;
+  const taksitAylik = taksitAylikFiyat || 0;
 
   return (
     <div className="product-card">
-      {discountPercent > 0 && <span className="product-badge">-%{discountPercent}</span>}
-      {freeShipping && <span className="product-badge shipping">Ücretsiz Kargo</span>}
+      {urunTuru && urunTuru !== 'Standart' && (
+        <span className="product-badge type-badge">{urunTuru}</span>
+      )}
+      {(!urunTuru || urunTuru === 'Standart') && discountPercent > 0 && (
+        <span className="product-badge">-%{discountPercent}</span>
+      )}
+      {freeShipping && (
+        <span className="product-badge shipping">
+          <i className="fas fa-truck" /> Ücretsiz Kargo
+        </span>
+      )}
 
       <Link to={`/urun/${id}`} className="product-img-wrap">
         <img src={image} alt={name} loading="lazy" />
@@ -45,6 +60,13 @@ export default function ProductCard({ product }) {
             <span className="product-current">{price.toLocaleString('tr-TR')} TL</span>
           )}
         </div>
+
+        {taksitCount > 0 && (
+          <div className="product-installment">
+            <i className="fas fa-credit-card" />
+            {taksitCount} taksit
+          </div>
+        )}
 
         <button
           className={`product-add-btn ${!inStock ? 'disabled' : ''}`}

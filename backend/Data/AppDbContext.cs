@@ -24,6 +24,7 @@ public class AppDbContext : DbContext
         {
             entity.Property(e => e.Fiyat).HasColumnType("decimal(18,2)");
             entity.Property(e => e.IndirimFiyat).HasColumnType("decimal(18,2)");
+            entity.Property(e => e.TaksitAylikFiyat).HasColumnType("decimal(18,2)");
         });
 
         modelBuilder.Entity<Siparis>(entity =>

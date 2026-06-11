@@ -4,6 +4,7 @@ import Layout from './components/Layout/Layout';
 import Login from './pages/Login/Login';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Products from './pages/Products/Products';
+import ProductForm from './pages/Products/ProductForm';
 import Categories from './pages/Categories/Categories';
 import Orders from './pages/Orders/Orders';
 import Users from './pages/Users/Users';
@@ -21,6 +22,8 @@ function AdminRoutes() {
       <Route path="/admin" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="urunler" element={<Products />} />
+        <Route path="urunler/ekle" element={<ProductForm />} />
+        <Route path="urunler/:id" element={<ProductForm />} />
         <Route path="kategoriler" element={<Categories />} />
         <Route path="siparisler" element={<Orders />} />
         <Route path="kullanicilar" element={<Users />} />
