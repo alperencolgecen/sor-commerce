@@ -5,6 +5,7 @@ import { products as fallbackProducts } from '../data/products';
 import ProductCard from '../components/ProductCard/ProductCard';
 import CategoryHeader from '../components/CategoryHeader/CategoryHeader';
 import EmptyState from '../components/EmptyState/EmptyState';
+import { SkeletonCard } from '../components/Skeleton/Skeleton';
 import './CategoryPage.css';
 
 export default function CategoryPage({ title, slug, description }) {
@@ -36,7 +37,9 @@ export default function CategoryPage({ title, slug, description }) {
     return (
       <>
         <CategoryHeader title={title} slug={slug} count={0} />
-        <div style={{ textAlign: 'center', padding: 40 }}>Yükleniyor...</div>
+        <div className="product-grid">
+          {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+        </div>
       </>
     );
   }

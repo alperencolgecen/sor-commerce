@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import ProductCard from '../../components/ProductCard/ProductCard';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import { SkeletonCard } from '../../components/Skeleton/Skeleton';
 import { useFilter } from '../../hooks/useFilter';
 import { getProducts } from '../../api/urunApi';
 import { products as fallbackProducts } from '../../data/products';
@@ -27,11 +28,14 @@ const sortOptions = [
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     getProducts()
       .then(setProducts)
-      .catch(() => setProducts(fallbackProducts));
+      .catch(() => setProducts(fallbackProducts))
+      .finally(() => setLoading(false));
   }, []);
 
   const { filters, setFilter, clearFilters, filteredProducts } = useFilter(products);
@@ -110,7 +114,9 @@ export default function Products() {
           </div>
 
           <div className="product-grid">
-            {filteredProducts.length === 0 ? (
+            {loading ? (
+              Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
+            ) : filteredProducts.length === 0 ? (
               <div style={{ gridColumn: '1 / -1' }}>
                 <EmptyState />
               </div>

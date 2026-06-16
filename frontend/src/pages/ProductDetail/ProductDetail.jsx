@@ -6,6 +6,7 @@ import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 import AlsoBought from '../../components/AlsoBought/AlsoBought';
 import EmptyState from '../../components/EmptyState/EmptyState';
+import { SkeletonProductDetail } from '../../components/Skeleton/Skeleton';
 import { getProductById } from '../../api/urunApi';
 import { products as fallbackProducts } from '../../data/products';
 import './ProductDetail.css';
@@ -31,7 +32,7 @@ export default function ProductDetail() {
   }, [id]);
 
   if (loading) {
-    return <div style={{ textAlign: 'center', padding: 60 }}>Yükleniyor...</div>;
+    return <SkeletonProductDetail />;
   }
 
   if (!product) {
