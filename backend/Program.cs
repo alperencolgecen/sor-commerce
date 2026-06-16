@@ -13,6 +13,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+var jwtKey = builder.Configuration["Jwt:Key"] ?? "SorTicaretAdminSecretKey2026!@#$%";
+var jwtIssuer = builder.Configuration["Jwt:Issuer"] ?? "SorTicaret";
+var jwtAudience = builder.Configuration["Jwt:Audience"] ?? "SorTicaretAdmin";
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -22,10 +26,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = "SorTicaret",
-            ValidAudience = "SorTicaretAdmin",
+            ValidIssuer = jwtIssuer,
+            ValidAudience = jwtAudience,
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes("SorTicaretAdminSecretKey2026!@#$%"))
+                Encoding.UTF8.GetBytes(jwtKey))
         };
     });
 
