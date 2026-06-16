@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { turkishCities } from '../../data/turkishCities';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import './Checkout.css';
 
@@ -30,8 +31,35 @@ export default function Checkout() {
   const smsInputs = smsCode;
 
   const [address, setAddress] = useState({
-    fullName: '', phone: '', city: '', district: '', neighborhood: '', address: '', zip: '',
+    fullName: '', phone: '', email: '', city: '', district: '', neighborhood: '', address: '', zip: '',
   });
+
+  const availableDistricts = useMemo(() => {
+    if (!address.city) return [];
+    const city = turkishCities.find(c => c.name === address.city);
+    return city ? city.districts : [];
+  }, [address.city]);
+
+  const formatPhone = (val) => {
+    const digits = val.replace(/\D/g, '').slice(0, 11);
+    if (digits.length < 2) return digits;
+    let formatted = digits.slice(0, 2);
+    if (digits.length > 2) formatted += ' ' + digits.slice(2, 5);
+    if (digits.length > 5) formatted += ' ' + digits.slice(5, 7);
+    if (digits.length > 7) formatted += ' ' + digits.slice(7, 9);
+    if (digits.length > 9) formatted += ' ' + digits.slice(9, 11);
+    return formatted;
+  };
+
+  const validateEmail = (email) => {
+    if (!email) return 'E-posta adresi gerekli';
+    const atIndex = email.indexOf('@');
+    if (atIndex < 1 || atIndex !== email.lastIndexOf('@')) return 'Geçerli bir e-posta adresi girin';
+    const local = email.slice(0, atIndex);
+    const domain = email.slice(atIndex + 1);
+    if (!local || !domain || !domain.includes('.')) return 'Geçerli bir e-posta adresi girin';
+    return '';
+  };
   const [shipping, setShipping] = useState('standard');
   const [payment, setPayment] = useState({ cardNumber: '', cardName: '', expMonth: '', expYear: '', cvv: '' });
   const [paymentError, setPaymentError] = useState('');
@@ -52,7 +80,14 @@ export default function Checkout() {
 
   const nextStep = () => {
     if (step === 1) {
-      if (!address.fullName || !address.phone || !address.city || !address.address) return;
+      if (!address.fullName) return alert('Ad Soyad gerekli');
+      if (!address.phone || address.phone.replace(/\D/g, '').length < 11) return alert('Geçerli bir telefon numarası girin (05XX XXX XX XX)');
+      if (!address.email) return alert('E-posta adresi gerekli');
+      const emailErr = validateEmail(address.email);
+      if (emailErr) return alert(emailErr);
+      if (!address.city) return alert('İl seçin');
+      if (!address.district) return alert('İlçe seçin');
+      if (!address.address) return alert('Açık adres gerekli');
     }
     if (step === 3) {
       if (payment.cardNumber.replace(/\s/g, '').length < 16 || !payment.cvv) {
@@ -306,24 +341,27 @@ export default function Checkout() {
                     </div>
                     <div className="form-group">
                       <label>Telefon <span>*</span></label>
-                      <input type="tel" value={address.phone} onChange={e => setAddress({ ...address, phone: e.target.value })} placeholder="05XX XXX XX XX" />
+                      <input type="tel" value={address.phone} onChange={e => setAddress({ ...address, phone: formatPhone(e.target.value) })} placeholder="05XX XXX XX XX" maxLength={14} />
+                      {address.phone && address.phone.replace(/\D/g, '').length < 11 && <span className="field-hint">11 haneli telefon numarası girin</span>}
                     </div>
                     <div className="form-group">
-                      <label>E-posta</label>
+                      <label>E-posta <span>*</span></label>
                       <input type="email" value={address.email} onChange={e => setAddress({ ...address, email: e.target.value })} placeholder="ornek@email.com" />
+                      {address.email && validateEmail(address.email) && <span className="field-hint error">{validateEmail(address.email)}</span>}
                     </div>
                     <div className="form-group">
                       <label>İl <span>*</span></label>
-                      <select value={address.city} onChange={e => setAddress({ ...address, city: e.target.value })}>
+                      <select value={address.city} onChange={e => { setAddress({ ...address, city: e.target.value, district: '' }) }}>
                         <option value="">Seçiniz</option>
-                        <option>İstanbul</option><option>Ankara</option><option>İzmir</option>
-                        <option>Bursa</option><option>Yozgat</option><option>Antalya</option>
-                        <option>Adana</option><option>Konya</option><option>Gaziantep</option>
+                        {turkishCities.map(c => <option key={c.name}>{c.name}</option>)}
                       </select>
                     </div>
                     <div className="form-group">
-                      <label>İlçe</label>
-                      <input type="text" value={address.district} onChange={e => setAddress({ ...address, district: e.target.value })} placeholder="İlçe" />
+                      <label>İlçe <span>*</span></label>
+                      <select value={address.district} onChange={e => setAddress({ ...address, district: e.target.value })} disabled={!address.city}>
+                        <option value="">{address.city ? 'İlçe seçin' : 'Önce il seçin'}</option>
+                        {availableDistricts.map(d => <option key={d}>{d}</option>)}
+                      </select>
                     </div>
                     <div className="form-group">
                       <label>Posta Kodu</label>

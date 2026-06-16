@@ -110,6 +110,9 @@
 
 .address-form-grid .form-group textarea { resize: vertical; }
 
+.field-hint { display: block; font-size: 11px; color: #F27A1A; margin-top: 4px; }
+.field-hint.error { color: #DC3545; }
+
 /* Shipping */
 .shipping-options { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
 
