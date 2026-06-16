@@ -61,6 +61,11 @@ export default function Checkout() {
     if (!local || !domain || !domain.includes('.')) return 'Geçerli bir e-posta adresi girin';
     return '';
   };
+
+  const turkishMobilePrefixes = ['501','505','506','530','531','532','533','534','535','536','537','538','539','540','541','542','543','544','545','546','547','548','549','550','551','552','553','554','555','556','557','558','559','561'];
+  const phoneDigits = address.phone.replace(/\D/g, '');
+  const phoneVerified = phoneDigits.length === 11 && phoneDigits.startsWith('0') && turkishMobilePrefixes.includes(phoneDigits.slice(1, 4));
+  const emailVerified = address.email.length > 0 && !validateEmail(address.email);
   const [shipping, setShipping] = useState('standard');
   const [payment, setPayment] = useState({ cardNumber: '', cardName: '', expMonth: '', expYear: '', cvv: '' });
   const [paymentError, setPaymentError] = useState('');
@@ -82,10 +87,8 @@ export default function Checkout() {
   const nextStep = () => {
     if (step === 1) {
       if (!address.fullName) return alert('Ad Soyad gerekli');
-      if (!address.phone || address.phone.replace(/\D/g, '').length < 11) return alert('Geçerli bir telefon numarası girin (0XXX XXX XX XX)');
-      if (!address.email) return alert('E-posta adresi gerekli');
-      const emailErr = validateEmail(address.email);
-      if (emailErr) return alert(emailErr);
+      if (!phoneVerified) return alert('Telefon numarası doğrulanmadı. Geçerli bir Türk mobil numarası girin (05XX XXX XX XX)');
+      if (!emailVerified) return alert('E-posta adresi doğrulanmadı. Geçerli bir e-posta adresi girin.');
       if (!address.city) return alert('İl seçin');
       if (!address.district) return alert('İlçe seçin');
       if (!address.address) return alert('Açık adres gerekli');
@@ -343,12 +346,20 @@ export default function Checkout() {
                     <div className="form-group">
                       <label>Telefon <span>*</span></label>
                       <input type="tel" value={address.phone} onChange={e => setAddress({ ...address, phone: formatPhone(e.target.value) })} placeholder="0XXX XXX XX XX" maxLength={14} />
-                      {address.phone && address.phone.replace(/\D/g, '').length < 11 && <span className="field-hint">0 ile başlayan 11 haneli numara girin</span>}
+                      {address.phone && (
+                        <span className={`field-hint ${phoneVerified ? 'success' : 'error'}`}>
+                          {phoneVerified ? '✓ Doğrulandı' : '✗ Doğrulanmadı — geçerli bir mobil numara girin'}
+                        </span>
+                      )}
                     </div>
                     <div className="form-group">
                       <label>E-posta <span>*</span></label>
                       <input type="email" value={address.email} onChange={e => setAddress({ ...address, email: e.target.value })} placeholder="ornek@email.com" />
-                      {address.email && validateEmail(address.email) && <span className="field-hint error">{validateEmail(address.email)}</span>}
+                      {address.email && (
+                        <span className={`field-hint ${emailVerified ? 'success' : 'error'}`}>
+                          {emailVerified ? '✓ Doğrulandı' : '✗ Doğrulanmadı — geçerli bir e-posta adresi girin'}
+                        </span>
+                      )}
                     </div>
                     <div className="form-group">
                       <label>İl <span>*</span></label>
