@@ -43,7 +43,7 @@ export default function Footer() {
             <h4>İletişim</h4>
             <ul className="footer-contact">
               <li><i className="fas fa-map-marker-alt" /> Sorgun, Yozgat</li>
-              <li><i className="fas fa-phone" /> +90 (354) 123 45 67</li>
+              <li><i className="fas fa-phone" /> +90 (358) 123 45 67</li>
               <li><i className="fas fa-envelope" /> info@sor-ticaret.com</li>
               <li><i className="fas fa-clock" /> 7/24 Hizmet</li>
             </ul>
