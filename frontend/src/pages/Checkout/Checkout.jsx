@@ -178,6 +178,28 @@ export default function Checkout() {
     }
   };
 
+  const sendOrderEmail = () => {
+    const orderItems = items.map(item => ({
+      name: item.name,
+      qty: item.qty,
+      price: ((item.discountPrice || item.price) * item.qty).toLocaleString('tr-TR'),
+    }));
+    const addressDetail = `${address.address}, ${address.district}/${address.city} ${address.zip}`;
+    fetch(`${API_BASE}/api/email/order-confirmation`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: address.email,
+        orderNumber,
+        customerName: address.fullName,
+        phone: address.phone,
+        addressDetail,
+        total: grandTotal.toLocaleString('tr-TR'),
+        items: orderItems,
+      }),
+    }).catch(() => {});
+  };
+
   const verify3d = () => {
     if (smsExpired) return alert('Kodun süresi doldu. Lütfen tekrar gönderin.');
     const entered = smsCode.join('');
@@ -188,6 +210,7 @@ export default function Checkout() {
       setProcessing(false);
       setOrderComplete(true);
       clearCart();
+      sendOrderEmail();
     }, 2000);
   };
 
