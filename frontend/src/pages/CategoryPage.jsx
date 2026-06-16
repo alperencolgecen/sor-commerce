@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getProductsByCategory } from '../api/urunApi';
-import { getProducts } from '../api/urunApi';
+import { products as fallbackProducts } from '../data/products';
 import ProductCard from '../components/ProductCard/ProductCard';
 import CategoryHeader from '../components/CategoryHeader/CategoryHeader';
 import EmptyState from '../components/EmptyState/EmptyState';
@@ -17,7 +17,7 @@ export default function CategoryPage({ title, slug, description }) {
     getProductsByCategory(slug)
       .then(setProducts)
       .catch(() => {
-        getProducts().then(all => setProducts(all.filter(p => p.category === slug)));
+        setProducts(fallbackProducts.filter(p => p.category === slug));
       })
       .finally(() => setLoading(false));
   }, [slug]);

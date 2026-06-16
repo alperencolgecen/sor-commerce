@@ -7,6 +7,7 @@ import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 import AlsoBought from '../../components/AlsoBought/AlsoBought';
 import EmptyState from '../../components/EmptyState/EmptyState';
 import { getProductById } from '../../api/urunApi';
+import { products as fallbackProducts } from '../../data/products';
 import './ProductDetail.css';
 
 export default function ProductDetail() {
@@ -22,7 +23,10 @@ export default function ProductDetail() {
     setLoading(true);
     getProductById(Number(id))
       .then(setProduct)
-      .catch(() => setProduct(null))
+      .catch(() => {
+        const found = fallbackProducts.find(p => p.id === Number(id));
+        setProduct(found || null);
+      })
       .finally(() => setLoading(false));
   }, [id]);
 
