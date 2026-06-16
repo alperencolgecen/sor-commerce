@@ -552,6 +552,49 @@
   display: flex; gap: 12px; justify-content: center;
 }
 
+.view-email-btn {
+  background: none; border: 1px solid #F27A1A; color: #F27A1A;
+  padding: 2px 10px; border-radius: 4px; font-size: 11px; font-weight: 600;
+  cursor: pointer; margin-left: 8px; transition: all 0.2s;
+}
+.view-email-btn:hover { background: #F27A1A; color: #fff; }
+
+.email-preview-modal {
+  background: #fff; border-radius: 16px; width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto; position: relative;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2); animation: slideUp 0.35s ease;
+}
+.email-preview-close {
+  position: absolute; top: 12px; right: 12px; width: 32px; height: 32px;
+  border-radius: 50%; border: none; background: #F3F4F6; color: #6B7280;
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
+  font-size: 14px; z-index: 1;
+}
+.email-preview-close:hover { background: #E5E7EB; }
+.email-preview-header {
+  padding: 28px 32px 20px; text-align: center;
+  border-bottom: 1px solid #E5E7EB;
+}
+.email-preview-header h3 { font-size: 20px; margin-top: 8px; color: #1D1D1D; }
+.email-preview-body { padding: 24px 32px 32px; }
+.email-preview-info {
+  background: #F9FAFB; border-radius: 8px; padding: 14px 16px;
+  font-size: 13px; color: #6B7280; line-height: 1.8; margin-bottom: 16px;
+}
+.email-preview-address {
+  background: #F9FAFB; border-radius: 8px; padding: 14px 16px;
+  font-size: 13px; color: #6B7280; line-height: 1.8; margin-bottom: 16px;
+}
+.email-preview-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+  margin-bottom: 16px;
+}
+.email-preview-table th { text-align: left; padding: 8px 0; color: #6B7280; font-weight: 600; border-bottom: 2px solid #E5E7EB; }
+.email-preview-table td { padding: 10px 0; border-bottom: 1px solid #F3F4F6; color: #1D1D1D; }
+.email-preview-table tfoot td { border-bottom: none; padding: 6px 0; color: #6B7280; }
+.email-preview-table .email-preview-grand td { font-weight: 700; color: #1D1D1D; font-size: 15px; padding-top: 10px; border-top: 2px solid #E5E7EB; }
+.email-preview-footer-text { text-align: center; font-size: 13px; color: #F27A1A; font-weight: 500; padding-top: 16px; border-top: 1px solid #E5E7EB; }
+
 .success-home-btn, .success-order-btn {
   padding: 14px 28px; border-radius: 8px; font-size: 14px;
   font-weight: 600; text-decoration: none; transition: all 0.2s;

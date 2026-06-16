@@ -30,6 +30,7 @@ export default function Checkout() {
   const [realSmsCode, setRealSmsCode] = useState('');
   const [smsTimer, setSmsTimer] = useState(60);
   const [orderComplete, setOrderComplete] = useState(false);
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
   const smsInputs = smsCode;
   const smsExpired = smsTimer <= 0;
   const timerRef = useRef(null);
@@ -336,9 +337,12 @@ export default function Checkout() {
                 <div className="notification-icon mail"><i className="fas fa-envelope" /></div>
                 <div className="notification-text">
                   <h4>E-posta Bildirimi</h4>
-                  <p>Sipariş detaylarınız <strong>{address.fullName ? address.fullName.toLowerCase().replace(/\s/g, '.') + '@email.com' : 'ornek@email.com'}</strong> adresine gönderildi</p>
+                  <p>Sipariş detaylarınız <strong>{address.email}</strong> adresine gönderildi</p>
                 </div>
-                <div className="notification-status sent"><i className="fas fa-check-circle" /> Gönderildi</div>
+                <div className="notification-status sent">
+                  <i className="fas fa-check-circle" /> Gönderildi
+                  <button className="view-email-btn" onClick={() => setShowEmailPreview(true)}>Görüntüle</button>
+                </div>
               </div>
               <div className="notification-item">
                 <div className="notification-icon sms"><i className="fas fa-sms" /></div>
@@ -376,6 +380,51 @@ export default function Checkout() {
             <Link to="/" className="success-home-btn"><i className="fas fa-home" /> Ana Sayfaya Dön</Link>
             <Link to="/profil" className="success-order-btn"><i className="fas fa-receipt" /> Siparişlerim</Link>
           </div>
+
+          {/* Email Preview Modal */}
+          {showEmailPreview && (
+            <div className="modal-overlay" onClick={() => setShowEmailPreview(false)}>
+              <div className="email-preview-modal" onClick={e => e.stopPropagation()}>
+                <button className="email-preview-close" onClick={() => setShowEmailPreview(false)}><i className="fas fa-times" /></button>
+                <div className="email-preview-header">
+                  <img src="/IMG/bg/SORGUN-Ticaret_logo.png" alt="" style={{ height: 32 }} />
+                  <h3>Sipariş Onayı</h3>
+                </div>
+                <div className="email-preview-body">
+                  <div className="email-preview-info">
+                    <div><strong>Alıcı:</strong> {address.email}</div>
+                    <div><strong>Sipariş No:</strong> {orderNumber}</div>
+                    <div><strong>Sipariş Tarihi:</strong> {new Date().toLocaleDateString('tr-TR')}</div>
+                  </div>
+                  <div className="email-preview-address">
+                    <strong>Teslimat Adresi:</strong>
+                    <p>{address.fullName} — {address.phone}</p>
+                    <p>{address.address}, {address.district}/{address.city} {address.zip}</p>
+                  </div>
+                  <table className="email-preview-table">
+                    <thead><tr><th>Ürün</th><th>Adet</th><th>Tutar</th></tr></thead>
+                    <tbody>
+                      {items.map(item => (
+                        <tr key={item.id}>
+                          <td>{item.name}</td>
+                          <td>{item.qty}</td>
+                          <td>{((item.discountPrice || item.price) * item.qty).toLocaleString('tr-TR')} TL</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr><td colSpan={2} style={{ textAlign: 'right' }}>Ürün Toplamı</td><td>{totalPrice.toLocaleString('tr-TR')} TL</td></tr>
+                      <tr><td colSpan={2} style={{ textAlign: 'right' }}>Kargo</td><td>{shippingPrice === 0 ? 'Ücretsiz' : shippingPrice.toLocaleString('tr-TR') + ' TL'}</td></tr>
+                      <tr className="email-preview-grand"><td colSpan={2} style={{ textAlign: 'right' }}>Toplam</td><td>{grandTotal.toLocaleString('tr-TR')} TL</td></tr>
+                    </tfoot>
+                  </table>
+                  <p className="email-preview-footer-text">
+                    <i className="fas fa-truck" /> Tahmini teslimat: {new Date(Date.now() + 5 * 86400000).toLocaleDateString('tr-TR')}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <>
