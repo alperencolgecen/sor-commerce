@@ -7,6 +7,7 @@ import Products from './pages/Products/Products';
 import ProductForm from './pages/Products/ProductForm';
 import Categories from './pages/Categories/Categories';
 import Orders from './pages/Orders/Orders';
+import OrderDetail from './pages/Orders/OrderDetail';
 import Users from './pages/Users/Users';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
@@ -27,6 +28,7 @@ function AdminRoutes() {
         <Route path="urunler/:id" element={<ProductForm />} />
         <Route path="kategoriler" element={<Categories />} />
         <Route path="siparisler" element={<Orders />} />
+        <Route path="siparisler/:id" element={<OrderDetail />} />
         <Route path="kullanicilar" element={<Users />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../api/admin';
 
 const statusLabels = {
@@ -46,7 +47,7 @@ export default function Orders() {
           <tbody>
             {filtered.map(o => (
               <tr key={o.id}>
-                <td style={{ fontWeight: 600 }}>#{o.id}</td>
+                <td style={{ fontWeight: 600 }}><Link to={`/admin/siparisler/${o.id}`} style={{ color: '#2563eb', textDecoration: 'none' }}>#{o.id}</Link></td>
                 <td>#{o.kullaniciId}</td>
                 <td>₺{(o.toplam || 0).toLocaleString('tr-TR')}</td>
                 <td><span className={`badge ${statusColors[o.durum] || 'badge-warn'}`}>{statusLabels[o.durum] || o.durum}</span></td>

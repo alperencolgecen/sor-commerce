@@ -46,6 +46,25 @@ public class SiparisController : ControllerBase
         }
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        try
+        {
+            _logger.LogInformation("Getting order {OrderId}", id);
+            var siparis = await _context.Siparisler
+                .Include(s => s.Detaylar)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (siparis == null) return NotFound();
+            return Ok(siparis);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting order {OrderId}", id);
+            return StatusCode(500, new { message = "Sipariş yüklenirken hata oluştu" });
+        }
+    }
+
     [HttpPut("{id}/durum")]
     public async Task<IActionResult> UpdateDurum(int id, [FromQuery] string durum)
     {
