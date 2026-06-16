@@ -37,30 +37,4 @@ public class UrunController : ControllerBase
         return Ok(urunler);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create(Urun urun)
-    {
-        _context.Urunler.Add(urun);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction(nameof(GetById), new { id = urun.Id }, urun);
-    }
-
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Urun urun)
-    {
-        if (id != urun.Id) return BadRequest();
-        _context.Entry(urun).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var urun = await _context.Urunler.FindAsync(id);
-        if (urun == null) return NotFound();
-        _context.Urunler.Remove(urun);
-        await _context.SaveChangesAsync();
-        return NoContent();
-    }
 }
