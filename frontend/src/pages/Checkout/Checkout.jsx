@@ -430,7 +430,7 @@ export default function Checkout() {
                         <input
                           type="text" inputMode="numeric"
                           value={payment.cardNumber}
-                          onChange={e => setPayment({ ...payment, cardNumber: e.target.value })}
+                          onChange={e => setPayment({ ...payment, cardNumber: formatCardNumber(e.target.value) })}
                           placeholder="1234 5678 9012 3456"
                           maxLength={19}
                         />
