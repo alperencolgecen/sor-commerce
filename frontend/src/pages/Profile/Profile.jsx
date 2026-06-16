@@ -21,7 +21,7 @@ const emptyAddress = {
 };
 
 export default function Profile() {
-  const { user, isLoggedIn, logout } = useAuth();
+  const { user, isLoggedIn, logout, getToken } = useAuth();
   const [tab, setTab] = useState('hesap');
   const [orders, setOrders] = useState([]);
   const [addresses, setAddresses] = useState([]);
@@ -30,10 +30,15 @@ export default function Profile() {
   const [editingAddress, setEditingAddress] = useState(null);
   const [addressForm, setAddressForm] = useState(emptyAddress);
 
+  const authHeaders = () => {
+    const token = getToken();
+    return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
+  };
+
   useEffect(() => {
     if (tab === 'siparisler' && user?.id) {
       setLoading(true);
-      fetch(`${API}/api/sepet/siparisler/${user.id}`)
+      fetch(`${API}/api/sepet/siparisler/${user.id}`, { headers: authHeaders() })
         .then(r => r.ok ? r.json() : [])
         .then(data => setOrders(data))
         .catch(() => setOrders([]))
@@ -45,7 +50,7 @@ export default function Profile() {
   }, [tab, user?.id]);
 
   const loadAddresses = () => {
-    fetch(`${API}/api/adres/kullanici/${user.id}`)
+    fetch(`${API}/api/adres/kullanici/${user.id}`, { headers: authHeaders() })
       .then(r => r.ok ? r.json() : [])
       .then(setAddresses)
       .catch(() => setAddresses([]));
@@ -83,7 +88,7 @@ export default function Profile() {
       const method = editingAddress ? 'PUT' : 'POST';
       const res = await fetch(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify(body),
       });
       if (res.ok) {
@@ -96,7 +101,7 @@ export default function Profile() {
   const deleteAddress = async (id) => {
     if (!confirm('Bu adresi silmek istediğinize emin misiniz?')) return;
     try {
-      const res = await fetch(`${API}/api/adres/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API}/api/adres/${id}`, { method: 'DELETE', headers: authHeaders() });
       if (res.ok) loadAddresses();
     } catch { }
   };

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { loginApi, registerApi } from '../api/authApi';
 
 const AuthContext = createContext();
@@ -13,6 +13,17 @@ export function AuthProvider({ children }) {
     } catch { /* ignore */ }
   }, []);
 
+  const getToken = useCallback(() => {
+    try {
+      const saved = localStorage.getItem('sor-user');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      return parsed.token || null;
+    } catch {
+      return null;
+    }
+  }, []);
+
   const login = async (email, password) => {
     const data = await loginApi(email, password);
     const userData = {
@@ -20,6 +31,7 @@ export function AuthProvider({ children }) {
       name: data.ad,
       fullName: data.ad,
       email: data.email,
+      token: data.token,
     };
     setUser(userData);
     localStorage.setItem('sor-user', JSON.stringify(userData));
@@ -33,6 +45,7 @@ export function AuthProvider({ children }) {
       name: data.ad,
       fullName: data.ad,
       email: data.email,
+      token: data.token,
     };
     setUser(userData);
     localStorage.setItem('sor-user', JSON.stringify(userData));
@@ -45,7 +58,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoggedIn: !!user }}>
+    <AuthContext.Provider value={{ user, login, register, logout, isLoggedIn: !!user, getToken }}>
       {children}
     </AuthContext.Provider>
   );
