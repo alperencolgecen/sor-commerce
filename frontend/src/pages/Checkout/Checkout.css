@@ -615,4 +615,20 @@
   .address-form-grid { grid-template-columns: 1fr; }
   .payment-form { grid-template-columns: 1fr; }
   .modal-3d { max-width: 100%; margin: 16px; }
+  .checkout-nav { flex-direction: column; gap: 10px; }
+  .checkout-nav a, .checkout-nav button { width: 100%; justify-content: center; }
+  .checkout-sidebar { position: static; }
+  .sms-inputs { gap: 4px; }
+  .sms-input { width: 36px; height: 44px; font-size: 20px; }
+  .email-preview-modal { max-width: 100%; margin: 16px; border-radius: 12px; }
+  .email-preview-body { padding: 16px; }
+  .email-preview-table { font-size: 12px; }
+}
+
+@media (max-width: 480px) {
+  .checkout-section { padding: 16px; border-radius: 8px; }
+  .email-preview-header { padding: 20px 16px 16px; }
+  .email-preview-header h3 { font-size: 17px; }
+  .sms-inbox-item { padding: 10px 12px; }
+  .sms-inbox-text { font-size: 11px; }
 }
