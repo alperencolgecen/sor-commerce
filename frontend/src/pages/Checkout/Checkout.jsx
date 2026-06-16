@@ -41,13 +41,14 @@ export default function Checkout() {
   }, [address.city]);
 
   const formatPhone = (val) => {
-    const digits = val.replace(/\D/g, '').slice(0, 11);
-    if (digits.length < 2) return digits;
-    let formatted = digits.slice(0, 2);
-    if (digits.length > 2) formatted += ' ' + digits.slice(2, 5);
-    if (digits.length > 5) formatted += ' ' + digits.slice(5, 7);
-    if (digits.length > 7) formatted += ' ' + digits.slice(7, 9);
-    if (digits.length > 9) formatted += ' ' + digits.slice(9, 11);
+    const allDigits = val.replace(/\D/g, '');
+    const digits = allDigits.startsWith('0') ? allDigits.slice(1, 11) : allDigits.slice(0, 10);
+    const normalized = '0' + digits;
+    if (normalized.length < 2) return normalized;
+    let formatted = normalized.slice(0, 4);
+    if (normalized.length > 4) formatted += ' ' + normalized.slice(4, 7);
+    if (normalized.length > 7) formatted += ' ' + normalized.slice(7, 9);
+    if (normalized.length > 9) formatted += ' ' + normalized.slice(9, 11);
     return formatted;
   };
 
@@ -81,7 +82,7 @@ export default function Checkout() {
   const nextStep = () => {
     if (step === 1) {
       if (!address.fullName) return alert('Ad Soyad gerekli');
-      if (!address.phone || address.phone.replace(/\D/g, '').length < 11) return alert('Geçerli bir telefon numarası girin (05XX XXX XX XX)');
+      if (!address.phone || address.phone.replace(/\D/g, '').length < 11) return alert('Geçerli bir telefon numarası girin (0XXX XXX XX XX)');
       if (!address.email) return alert('E-posta adresi gerekli');
       const emailErr = validateEmail(address.email);
       if (emailErr) return alert(emailErr);
@@ -341,8 +342,8 @@ export default function Checkout() {
                     </div>
                     <div className="form-group">
                       <label>Telefon <span>*</span></label>
-                      <input type="tel" value={address.phone} onChange={e => setAddress({ ...address, phone: formatPhone(e.target.value) })} placeholder="05XX XXX XX XX" maxLength={14} />
-                      {address.phone && address.phone.replace(/\D/g, '').length < 11 && <span className="field-hint">11 haneli telefon numarası girin</span>}
+                      <input type="tel" value={address.phone} onChange={e => setAddress({ ...address, phone: formatPhone(e.target.value) })} placeholder="0XXX XXX XX XX" maxLength={14} />
+                      {address.phone && address.phone.replace(/\D/g, '').length < 11 && <span className="field-hint">0 ile başlayan 11 haneli numara girin</span>}
                     </div>
                     <div className="form-group">
                       <label>E-posta <span>*</span></label>
