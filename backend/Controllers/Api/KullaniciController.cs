@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace backend.Controllers.Api;
 
@@ -21,7 +19,7 @@ public class KullaniciController : ControllerBase
         if (await _context.Kullanicilar.AnyAsync(k => k.Email == kayit.Email))
             return BadRequest(new { message = "Bu e-posta zaten kayıtlı" });
 
-        kayit.SifreHash = HashPassword(kayit.SifreHash);
+        kayit.SifreHash = BCrypt.Net.BCrypt.HashPassword(kayit.SifreHash);
         _context.Kullanicilar.Add(kayit);
         await _context.SaveChangesAsync();
         return Ok(new { id = kayit.Id, ad = kayit.Ad, email = kayit.Email });
@@ -30,18 +28,11 @@ public class KullaniciController : ControllerBase
     [HttpPost("giris")]
     public async Task<IActionResult> Giris([FromBody] Kullanici giris)
     {
-        var hash = HashPassword(giris.SifreHash);
         var kullanici = await _context.Kullanicilar
-            .FirstOrDefaultAsync(k => k.Email == giris.Email && k.SifreHash == hash);
-        if (kullanici == null)
+            .FirstOrDefaultAsync(k => k.Email == giris.Email);
+        if (kullanici == null || !BCrypt.Net.BCrypt.Verify(giris.SifreHash, kullanici.SifreHash))
             return Unauthorized(new { message = "E-posta veya şifre hatalı" });
 
         return Ok(new { id = kullanici.Id, ad = kullanici.Ad, email = kullanici.Email });
-    }
-
-    private static string HashPassword(string password)
-    {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password));
-        return Convert.ToHexString(bytes).ToLower();
     }
 }
