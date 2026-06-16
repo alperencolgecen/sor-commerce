@@ -26,6 +26,15 @@ public class SepetController : ControllerBase
             _logger.LogInformation("Creating order for user {UserId}", siparis.KullaniciId);
             siparis.Tarih = DateTime.UtcNow;
             siparis.Durum = "Beklemede";
+            foreach (var detay in siparis.Detaylar)
+            {
+                var urun = await _context.Urunler.FindAsync(detay.UrunId);
+                if (urun != null)
+                {
+                    detay.UrunAd = urun.Ad;
+                    detay.UrunGorsel = urun.Gorsel;
+                }
+            }
             _context.Siparisler.Add(siparis);
             await _context.SaveChangesAsync();
             _logger.LogInformation("Order {OrderId} created", siparis.Id);

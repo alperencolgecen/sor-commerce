@@ -8,6 +8,12 @@ public class SiparisDetay
     public int SiparisId { get; set; }
     public int UrunId { get; set; }
 
+    [MaxLength(200)]
+    public string UrunAd { get; set; }
+
+    [MaxLength(500)]
+    public string UrunGorsel { get; set; }
+
     [Range(1, int.MaxValue)]
     public int Adet { get; set; }
 
