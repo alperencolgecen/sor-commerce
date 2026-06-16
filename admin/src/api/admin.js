@@ -39,7 +39,7 @@ async function post(endpoint, data) {
   const res = await fetch(`${BASE}${endpoint}`, {
     method: 'POST',
     headers: headers(isFormData),
-    body: data,
+    body: isFormData ? data : JSON.stringify(data),
   });
   handle401(res);
   if (!res.ok) throw new Error('API Error');
@@ -52,11 +52,12 @@ async function put(endpoint, data) {
   const res = await fetch(`${BASE}${endpoint}`, {
     method: 'PUT',
     headers: headers(isFormData),
-    body: data,
+    body: isFormData ? data : JSON.stringify(data),
   });
   handle401(res);
   if (!res.ok) throw new Error('API Error');
-  return res;
+  const text = await res.text();
+  return text ? JSON.parse(text) : null;
 }
 
 async function del(endpoint) {

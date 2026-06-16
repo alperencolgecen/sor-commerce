@@ -58,11 +58,14 @@ public class KategoriController : ControllerBase
         try
         {
             _logger.LogInformation("Updating category {CategoryId}", id);
-            if (id != kategori.Id) return BadRequest();
-            _context.Entry(kategori).State = EntityState.Modified;
+            var existing = await _context.Kategoriler.FindAsync(id);
+            if (existing == null) return NotFound();
+            existing.Ad = kategori.Ad;
+            if (kategori.Ikon != null) existing.Ikon = kategori.Ikon;
+            if (kategori.Renk != null) existing.Renk = kategori.Renk;
             await _context.SaveChangesAsync();
             _logger.LogInformation("Category {CategoryId} updated", id);
-            return NoContent();
+            return Ok(existing);
         }
         catch (Exception ex)
         {

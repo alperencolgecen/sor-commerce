@@ -1,17 +1,34 @@
-import { products, orders, categories } from '../../data';
+import { useState, useEffect } from 'react';
+import api from '../../api/admin';
 import './Dashboard.css';
 
-const stats = [
-  { label: 'Toplam Ürün', value: products.length, icon: 'fas fa-box', color: '#2563eb' },
-  { label: 'Aktif Ürün', value: products.filter(p => p.status === 'active').length, icon: 'fas fa-check-circle', color: '#22c55e' },
-  { label: 'Kategori', value: categories.length, icon: 'fas fa-list', color: '#f59e0b' },
-  { label: 'Bugünkü Sipariş', value: orders.filter(o => o.date === '2026-06-04').length, icon: 'fas fa-truck', color: '#8b5cf6' },
-  { label: 'Toplam Kullanıcı', value: 156, icon: 'fas fa-users', color: '#ec4899' },
-];
-
-const recentOrders = orders.slice(0, 5);
-
 export default function Dashboard() {
+  const [stats, setStats] = useState([]);
+  const [recentOrders, setRecentOrders] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      api.get('/api/admin/urun'),
+      api.get('/api/admin/siparis'),
+      api.get('/api/admin/kategori'),
+      api.get('/api/admin/kullanici'),
+    ]).then(([u, s, k, ku]) => {
+      const urunler = u.items || u;
+      const siparisler = s.items || s;
+      const kategoriler = k.items || k;
+      const kullanicilar = ku.items || ku;
+      const today = new Date().toISOString().slice(0, 10);
+      setStats([
+        { label: 'Toplam Ürün', value: urunler.length, icon: 'fas fa-box', color: '#2563eb' },
+        { label: 'Stoktakiler', value: urunler.filter(u => u.stokta).length, icon: 'fas fa-check-circle', color: '#22c55e' },
+        { label: 'Kategori', value: kategoriler.length, icon: 'fas fa-list', color: '#f59e0b' },
+        { label: 'Bugünkü Sipariş', value: siparisler.filter(s => s.tarih?.startsWith(today)).length, icon: 'fas fa-truck', color: '#8b5cf6' },
+        { label: 'Toplam Kullanıcı', value: kullanicilar.length, icon: 'fas fa-users', color: '#ec4899' },
+      ]);
+      setRecentOrders(siparisler.slice(0, 5));
+    }).catch(() => {});
+  }, []);
+
   return (
     <div>
       <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 20 }}>Dashboard</h2>
@@ -34,16 +51,16 @@ export default function Dashboard() {
         </div>
         <table>
           <thead>
-            <tr><th>Sipariş</th><th>Müşteri</th><th>Toplam</th><th>Durum</th><th>Tarih</th></tr>
+            <tr><th>Sipariş</th><th>Kullanıcı ID</th><th>Toplam</th><th>Durum</th><th>Tarih</th></tr>
           </thead>
           <tbody>
             {recentOrders.map(o => (
               <tr key={o.id}>
                 <td style={{ fontWeight: 600 }}>#{o.id}</td>
-                <td>{o.customer}</td>
-                <td>₺{o.total.toLocaleString('tr-TR')}</td>
-                <td><span className={`badge ${o.status === 'teslim-edildi' ? 'badge-success' : o.status === 'kargoda' ? 'badge-info' : o.status === 'hazırlanıyor' ? 'badge-warn' : 'badge-warn'}`}>{o.status === 'teslim-edildi' ? 'Teslim Edildi' : o.status === 'kargoda' ? 'Kargoda' : o.status === 'hazırlanıyor' ? 'Hazırlanıyor' : 'Beklemede'}</span></td>
-                <td>{o.date}</td>
+                <td>#{o.kullaniciId}</td>
+                <td>₺{(o.toplam || 0).toLocaleString('tr-TR')}</td>
+                <td><span className={`badge ${o.durum === 'teslim-edildi' ? 'badge-success' : o.durum === 'kargoda' ? 'badge-info' : o.durum === 'hazırlanıyor' ? 'badge-warn' : 'badge-warn'}`}>{o.durum || 'Beklemede'}</span></td>
+                <td>{o.tarih ? new Date(o.tarih).toLocaleDateString('tr-TR') : '-'}</td>
               </tr>
             ))}
           </tbody>

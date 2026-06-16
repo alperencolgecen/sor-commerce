@@ -1,26 +1,38 @@
-import { useState } from 'react';
-import { categories as initialCats } from '../../data';
+import { useState, useEffect } from 'react';
+import api from '../../api/admin';
 
 export default function Categories() {
-  const [data, setData] = useState(initialCats);
+  const [data, setData] = useState([]);
   const [editing, setEditing] = useState(null);
   const [name, setName] = useState('');
 
-  const startEdit = (c) => { setEditing(c); setName(c.name); };
+  useEffect(() => {
+    api.get('/api/admin/kategori').then(setData).catch(() => {});
+  }, []);
+
+  const startEdit = (c) => { setEditing(c); setName(c.ad); };
 
   const save = () => {
     if (!name.trim()) return;
     if (editing) {
-      setData(data.map(c => c.id === editing.id ? { ...c, name } : c));
+      api.put(`/api/admin/kategori/${editing.id}`, { ad: name }).then(() => {
+        setData(data.map(c => c.id === editing.id ? { ...c, ad: name } : c));
+        setEditing(null); setName('');
+      }).catch(() => {});
     } else {
-      const slug = name.toLowerCase().replace(/[^a-z0-9çşğüöı]/g, '-').replace(/-+/g, '-');
-      setData([...data, { id: Math.max(...data.map(c => c.id)) + 1, name, slug, productCount: 0 }]);
+      api.post('/api/admin/kategori', { ad: name }).then(newCat => {
+        setData([...data, newCat]);
+        setEditing(null); setName('');
+      }).catch(() => {});
     }
-    setEditing(null); setName('');
   };
 
   const remove = (id) => {
-    if (confirm('Emin misiniz?')) setData(data.filter(c => c.id !== id));
+    if (confirm('Emin misiniz?')) {
+      api.del(`/api/admin/kategori/${id}`).then(() => {
+        setData(data.filter(c => c.id !== id));
+      }).catch(() => {});
+    }
   };
 
   return (
@@ -46,15 +58,14 @@ export default function Categories() {
       <div className="card" style={{ padding: 0 }}>
         <table>
           <thead>
-            <tr><th>ID</th><th>Kategori Adı</th><th>Slug</th><th>Ürün Sayısı</th><th style={{ width: 100 }}>İşlem</th></tr>
+            <tr><th>ID</th><th>Kategori Adı</th><th>Ikon</th><th style={{ width: 100 }}>İşlem</th></tr>
           </thead>
           <tbody>
             {data.map(c => (
               <tr key={c.id}>
                 <td>{c.id}</td>
-                <td style={{ fontWeight: 500 }}>{c.name}</td>
-                <td style={{ color: 'var(--text-sec)' }}>/{c.slug}</td>
-                <td>{c.productCount}</td>
+                <td style={{ fontWeight: 500 }}>{c.ad}</td>
+                <td style={{ color: 'var(--text-sec)' }}><i className={c.ikon || 'fas fa-tag'} /> {c.ikon}</td>
                 <td>
                   <div style={{ display: 'flex', gap: 4 }}>
                     <button className="btn btn-outline btn-sm" onClick={() => startEdit(c)}><i className="fas fa-edit" /></button>
