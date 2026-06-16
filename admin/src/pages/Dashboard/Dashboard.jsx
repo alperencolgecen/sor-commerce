@@ -5,6 +5,7 @@ import './Dashboard.css';
 export default function Dashboard() {
   const [stats, setStats] = useState([]);
   const [recentOrders, setRecentOrders] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -26,6 +27,21 @@ export default function Dashboard() {
         { label: 'Toplam Kullanıcı', value: kullanicilar.length, icon: 'fas fa-users', color: '#ec4899' },
       ]);
       setRecentOrders(siparisler.slice(0, 5));
+
+      const months = {};
+      const monthNames = ['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+      siparisler.forEach(o => {
+        if (!o.tarih) return;
+        const d = new Date(o.tarih);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        months[key] = (months[key] || 0) + (o.toplam || 0);
+      });
+      const sorted = Object.entries(months).sort(([a], [b]) => a.localeCompare(b));
+      const maxVal = Math.max(...Object.values(months), 1);
+      setMonthlyData(sorted.map(([key, total]) => {
+        const [, m] = key.split('-');
+        return { label: monthNames[parseInt(m) - 1], total, pct: (total / maxVal) * 100 };
+      }));
     }).catch(() => {});
   }, []);
 
@@ -65,6 +81,21 @@ export default function Dashboard() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="card" style={{ marginTop: 24 }}>
+        <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 16 }}>Aylık Sipariş Grafiği</h3>
+        <div className="chart-bars">
+          {monthlyData.map((m, i) => (
+            <div className="chart-bar-col" key={i}>
+              <div className="chart-bar-value">₺{(m.total / 1000).toFixed(0)}k</div>
+              <div className="chart-bar-track">
+                <div className="chart-bar-fill" style={{ height: `${m.pct}%` }} />
+              </div>
+              <div className="chart-bar-label">{m.label}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
