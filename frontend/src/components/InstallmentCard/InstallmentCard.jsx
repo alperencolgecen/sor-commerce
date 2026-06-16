@@ -1,3 +1,4 @@
+import { handleImgError } from '../../utils/placeholderImage';
 import './InstallmentCard.css';
 
 export default function InstallmentCard({ product }) {
@@ -7,7 +8,7 @@ export default function InstallmentCard({ product }) {
   return (
     <div className="installment-card">
       <div className="installment-img-wrap">
-        <img src={image} alt={name} loading="lazy" />
+        <img src={image} alt={name} loading="lazy" onError={handleImgError} />
       </div>
       <div className="installment-body">
         <h4 className="installment-name">{name}</h4>

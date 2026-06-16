@@ -65,7 +65,7 @@ export default function ProductDetail() {
       <div className="detail-page">
         <div className="detail-gallery">
           <div className="detail-main-img">
-            <img src={image} alt={name} />
+            <img src={image} alt={name} onError={handleImgError} />
           </div>
         </div>
 

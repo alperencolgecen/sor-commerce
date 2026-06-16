@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useToast } from '../../context/ToastContext';
+import { handleImgError } from '../../utils/placeholderImage';
 import { turkishCities } from '../../data/turkishCities';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import './Checkout.css';
@@ -410,7 +411,7 @@ export default function Checkout() {
             <div className="success-products">
               {items.map(item => (
                 <div className="success-product" key={item.id}>
-                  <img src={item.image} alt={item.name} />
+                  <img src={item.image} alt={item.name} onError={handleImgError} />
                   <div className="success-product-info">
                     <h4>{item.name}</h4>
                     <p>Adet: {item.qty}</p>
@@ -695,7 +696,7 @@ export default function Checkout() {
                     <h4>Sipariş Edilen Ürünler ({items.length})</h4>
                     {items.map(item => (
                       <div className="review-product" key={item.id}>
-                        <img src={item.image} alt={item.name} />
+                        <img src={item.image} alt={item.name} onError={handleImgError} />
                         <div>
                           <h5>{item.name}</h5>
                           <p>Adet: {item.qty}</p>
@@ -736,7 +737,7 @@ export default function Checkout() {
               <div className="checkout-sidebar-items">
                 {items.slice(0, 3).map(item => (
                   <div className="sidebar-item" key={item.id}>
-                    <img src={item.image} alt={item.name} />
+                    <img src={item.image} alt={item.name} onError={handleImgError} />
                     <div>
                       <h4>{item.name}</h4>
                       <p>Adet: {item.qty}</p>

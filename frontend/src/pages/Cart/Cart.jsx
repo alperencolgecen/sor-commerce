@@ -1,4 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
+import { handleImgError } from '../../utils/placeholderImage';
 import { useCart } from '../../context/CartContext';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import EmptyState from '../../components/EmptyState/EmptyState';
@@ -31,7 +32,7 @@ export default function Cart() {
           {items.map(item => (
             <div className="cart-item" key={item.id}>
               <Link to={`/urun/${item.id}`} className="cart-item-img">
-                <img src={item.image} alt={item.name} />
+                <img src={item.image} alt={item.name} onError={handleImgError} />
               </Link>
               <div className="cart-item-info">
                 <Link to={`/urun/${item.id}`} className="cart-item-name">{item.name}</Link>

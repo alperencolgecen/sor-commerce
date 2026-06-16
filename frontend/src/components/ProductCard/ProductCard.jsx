@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useFavorites } from '../../context/FavoritesContext';
+import { handleImgError } from '../../utils/placeholderImage';
 import './ProductCard.css';
 
 export default function ProductCard({ product }) {
@@ -40,7 +41,7 @@ export default function ProductCard({ product }) {
       )}
 
       <Link to={`/urun/${id}`} className="product-img-wrap">
-        <img src={image} alt={name} loading="lazy" />
+        <img src={image} alt={name} loading="lazy" onError={handleImgError} />
         <button
           className={`product-fav-btn ${isFavorite(id) ? 'active' : ''}`}
           onClick={e => { e.preventDefault(); toggleFavorite(product); }}
