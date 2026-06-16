@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { turkishCities } from '../../data/turkishCities';
@@ -27,8 +27,12 @@ export default function Checkout() {
   const [processing, setProcessing] = useState(false);
   const [show3d, setShow3d] = useState(false);
   const [smsCode, setSmsCode] = useState(['', '', '', '', '', '']);
+  const [realSmsCode, setRealSmsCode] = useState('');
+  const [smsTimer, setSmsTimer] = useState(60);
   const [orderComplete, setOrderComplete] = useState(false);
   const smsInputs = smsCode;
+  const smsExpired = smsTimer <= 0;
+  const timerRef = useRef(null);
 
   const [address, setAddress] = useState({
     fullName: '', phone: '', email: '', city: '', district: '', neighborhood: '', address: '', zip: '',
@@ -84,6 +88,33 @@ export default function Checkout() {
     return cardTypes.find(t => t.pattern.test(digits));
   };
 
+  useEffect(() => {
+    if (show3d) {
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      setRealSmsCode(code);
+      setSmsCode(['', '', '', '', '', '']);
+      setSmsTimer(60);
+    }
+  }, [show3d]);
+
+  useEffect(() => {
+    if (!show3d || smsTimer <= 0) return;
+    timerRef.current = setInterval(() => {
+      setSmsTimer(prev => {
+        if (prev <= 1) { clearInterval(timerRef.current); return 0; }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [show3d, smsTimer]);
+
+  const resendSms = () => {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    setRealSmsCode(code);
+    setSmsCode(['', '', '', '', '', '']);
+    setSmsTimer(60);
+  };
+
   const nextStep = () => {
     if (step === 1) {
       if (!address.fullName) return alert('Ad Soyad gerekli');
@@ -124,6 +155,9 @@ export default function Checkout() {
   };
 
   const verify3d = () => {
+    if (smsExpired) return alert('Kodun süresi doldu. Lütfen tekrar gönderin.');
+    const entered = smsCode.join('');
+    if (entered !== realSmsCode) return alert('Hatalı kod. Lütfen tekrar deneyin.');
     setShow3d(false);
     setProcessing(true);
     setTimeout(() => {
@@ -179,9 +213,33 @@ export default function Checkout() {
                 <i className="fas fa-credit-card" />
                 <span>**** **** **** {payment.cardNumber.replace(/\s/g, '').slice(-4)}</span>
               </div>
+
+              {/* Timer */}
+              <div className={`sms-timer ${smsExpired ? 'expired' : ''}`}>
+                <i className={`fas ${smsExpired ? 'fa-times-circle' : 'fa-clock'}`} />
+                <span>{smsExpired ? 'Süre doldu' : `${String(Math.floor(smsTimer / 60)).padStart(2, '0')}:${String(smsTimer % 60).padStart(2, '0')}`}</span>
+              </div>
+
+              {/* Simulated SMS Inbox */}
+              <div className="sms-inbox">
+                <div className="sms-inbox-header">
+                  <i className="fas fa-comment-dots" /> Mesajlar
+                </div>
+                <div className="sms-inbox-item">
+                  <div className="sms-inbox-icon"><i className="fas fa-university" /></div>
+                  <div className="sms-inbox-content">
+                    <div className="sms-inbox-sender">Akbank 3D Secure</div>
+                    <div className="sms-inbox-text">
+                      {realSmsCode
+                        ? `${realSmsCode} bankacılık işleminizin doğrulama kodudur. Kimseyle paylaşmayınız.`
+                        : 'Kod gönderiliyor...'}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="modal-3d-divider" />
-              <p className="modal-3d-label">Cep Telefonunuza gönderilen 6 haneli kodu girin</p>
-              <p className="modal-3d-phone">+90 *** *** {address.phone.slice(-4) || 'XX XX'}</p>
+              <p className="modal-3d-label">6 haneli kodu girin</p>
               <div className="sms-inputs">
                 {smsInputs.map((v, i) => (
                   <input
@@ -190,11 +248,12 @@ export default function Checkout() {
                     onKeyDown={e => handleSmsKeyDown(i, e)}
                     className={`sms-input ${v ? 'filled' : ''}`}
                     autoFocus={i === 0}
+                    disabled={smsExpired}
                   />
                 ))}
               </div>
               <p className="modal-3d-resend">
-                Kod gelmedi mi? <button onClick={() => setSmsCode(['', '', '', '', '', ''])}>Tekrar Gönder</button>
+                Kod gelmedi mi? <button onClick={resendSms}>Tekrar Gönder</button>
               </p>
             </div>
             <div className="modal-3d-footer">
@@ -202,7 +261,7 @@ export default function Checkout() {
               <button
                 className="modal-3d-confirm"
                 onClick={verify3d}
-                disabled={smsCode.some(c => !c)}
+                disabled={smsCode.some(c => !c) || smsExpired}
               >
                 <i className="fas fa-check-circle" /> Onayla
               </button>
