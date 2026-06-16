@@ -13,18 +13,25 @@ public class UrunController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IWebHostEnvironment _env;
-    public UrunController(AppDbContext context, IWebHostEnvironment env)
+    private readonly ILogger<UrunController> _logger;
+    public UrunController(AppDbContext context, IWebHostEnvironment env, ILogger<UrunController> logger)
     {
         _context = context;
         _env = env;
+        _logger = logger;
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _context.Urunler.ToListAsync());
+    public async Task<IActionResult> GetAll()
+    {
+        _logger.LogInformation("Getting all products");
+        return Ok(await _context.Urunler.ToListAsync());
+    }
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
+        _logger.LogInformation("Getting product {ProductId}", id);
         var urun = await _context.Urunler.FindAsync(id);
         return urun == null ? NotFound() : Ok(urun);
     }
@@ -32,6 +39,7 @@ public class UrunController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create([FromForm] Urun urun, IFormFile gorselDosya)
     {
+        _logger.LogInformation("Creating new product: {ProductName}", urun.Ad);
         if (gorselDosya != null)
             urun.Gorsel = await SaveImage(gorselDosya);
 
@@ -47,6 +55,7 @@ public class UrunController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromForm] Urun urun, IFormFile gorselDosya)
     {
+        _logger.LogInformation("Updating product {ProductId}", id);
         if (id != urun.Id) return BadRequest();
 
         var existing = await _context.Urunler.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
@@ -63,16 +72,19 @@ public class UrunController : ControllerBase
 
         _context.Entry(urun).State = EntityState.Modified;
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Product {ProductId} updated", id);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting product {ProductId}", id);
         var urun = await _context.Urunler.FindAsync(id);
         if (urun == null) return NotFound();
         _context.Urunler.Remove(urun);
         await _context.SaveChangesAsync();
+        _logger.LogInformation("Product {ProductId} deleted", id);
         return NoContent();
     }
 

@@ -11,9 +11,17 @@ namespace backend.Controllers.Admin;
 public class KullaniciController : ControllerBase
 {
     private readonly AppDbContext _context;
-    public KullaniciController(AppDbContext context) => _context = context;
+    private readonly ILogger<KullaniciController> _logger;
+    public KullaniciController(AppDbContext context, ILogger<KullaniciController> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll() =>
-        Ok(await _context.Kullanicilar.Select(k => new { k.Id, k.Ad, k.Email }).ToListAsync());
+    public async Task<IActionResult> GetAll()
+    {
+        _logger.LogInformation("Getting all users");
+        return Ok(await _context.Kullanicilar.Select(k => new { k.Id, k.Ad, k.Email }).ToListAsync());
+    }
 }
