@@ -9,6 +9,7 @@ import Categories from './pages/Categories/Categories';
 import Orders from './pages/Orders/Orders';
 import OrderDetail from './pages/Orders/OrderDetail';
 import Users from './pages/Users/Users';
+import Settings from './pages/Settings/Settings';
 import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function ProtectedRoute({ children }) {
@@ -30,6 +31,7 @@ function AdminRoutes() {
         <Route path="siparisler" element={<Orders />} />
         <Route path="siparisler/:id" element={<OrderDetail />} />
         <Route path="kullanicilar" element={<Users />} />
+        <Route path="ayarlar" element={<Settings />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin" replace />} />
     </Routes>

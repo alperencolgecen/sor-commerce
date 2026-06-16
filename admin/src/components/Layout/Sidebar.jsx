@@ -7,6 +7,7 @@ const links = [
   { to: '/admin/kategoriler', label: 'Kategoriler', icon: 'fas fa-list' },
   { to: '/admin/siparisler', label: 'Siparişler', icon: 'fas fa-truck' },
   { to: '/admin/kullanicilar', label: 'Kullanıcılar', icon: 'fas fa-users' },
+  { to: '/admin/ayarlar', label: 'Ayarlar', icon: 'fas fa-cog' },
 ];
 
 export default function Sidebar() {

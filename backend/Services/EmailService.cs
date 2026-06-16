@@ -7,25 +7,34 @@ public class EmailService : IEmailService
 {
     private readonly IConfiguration _config;
     private readonly ILogger<EmailService> _logger;
+    private readonly AppSettingsService _appSettings;
 
-    public EmailService(IConfiguration config, ILogger<EmailService> logger)
+    public EmailService(IConfiguration config, ILogger<EmailService> logger, AppSettingsService appSettings)
     {
         _config = config;
         _logger = logger;
+        _appSettings = appSettings;
+    }
+
+    private string GetSetting(string key, string configKey, string defaultValue)
+    {
+        var fromSettings = _appSettings.Get(key);
+        if (!string.IsNullOrEmpty(fromSettings)) return fromSettings;
+        return _config[configKey] ?? defaultValue;
     }
 
     public async Task<bool> SendOrderConfirmationAsync(string to, string orderNumber, string customerName, string phone, string addressDetail, string itemsHtml, string total)
     {
         try
         {
-            var host = _config["Smtp:Host"];
+            var host = GetSetting("smtpHost", "Smtp:Host", "");
             if (!string.IsNullOrEmpty(host))
             {
-                var port = int.Parse(_config["Smtp:Port"] ?? "587");
-                var username = _config["Smtp:Username"];
-                var password = _config["Smtp:Password"];
-                var from = _config["Smtp:From"];
-                var fromName = _config["Smtp:FromName"];
+                var port = int.Parse(GetSetting("smtpPort", "Smtp:Port", "587"));
+                var username = GetSetting("smtpUsername", "Smtp:Username", "");
+                var password = GetSetting("smtpPassword", "Smtp:Password", "");
+                var from = GetSetting("smtpFrom", "Smtp:From", "noreply@sor-ticaret.com");
+                var fromName = GetSetting("smtpFromName", "Smtp:FromName", "SOR Ticaret");
 
                 using var client = new SmtpClient(host, port);
                 client.EnableSsl = true;
