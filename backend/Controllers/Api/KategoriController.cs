@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
+using backend.Services;
 
 namespace backend.Controllers.Api;
 
@@ -10,11 +11,13 @@ public class KategoriController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly ILogger<KategoriController> _logger;
+    private readonly ICacheService _cache;
 
-    public KategoriController(AppDbContext context, ILogger<KategoriController> logger)
+    public KategoriController(AppDbContext context, ILogger<KategoriController> logger, ICacheService cache)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -23,7 +26,9 @@ public class KategoriController : ControllerBase
         try
         {
             _logger.LogInformation("Getting all categories");
-            return Ok(await _context.Kategoriler.ToListAsync());
+            return Ok(await _cache.GetOrSetAsync("kategoriler",
+                () => _context.Kategoriler.ToListAsync(),
+                TimeSpan.FromMinutes(10)));
         }
         catch (Exception ex)
         {

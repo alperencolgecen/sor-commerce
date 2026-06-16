@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
+using backend.Services;
 
 namespace backend.Controllers.Api;
 
@@ -11,11 +12,13 @@ public class UrunController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly ILogger<UrunController> _logger;
+    private readonly ICacheService _cache;
 
-    public UrunController(AppDbContext context, ILogger<UrunController> logger)
+    public UrunController(AppDbContext context, ILogger<UrunController> logger, ICacheService cache)
     {
         _context = context;
         _logger = logger;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -24,16 +27,21 @@ public class UrunController : ControllerBase
         try
         {
             _logger.LogInformation("Getting products page {Page} limit {Limit}", page, limit);
-            var query = _context.Urunler.AsQueryable();
-            var total = await query.CountAsync();
-            var items = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
-            return Ok(new PagedResponse<Urun>
+            var cacheKey = $"urunler_{page}_{limit}";
+            var result = await _cache.GetOrSetAsync(cacheKey, async () =>
             {
-                Items = items,
-                Total = total,
-                Page = page,
-                Limit = limit,
-            });
+                var query = _context.Urunler.AsQueryable();
+                var total = await query.CountAsync();
+                var items = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
+                return new PagedResponse<Urun>
+                {
+                    Items = items,
+                    Total = total,
+                    Page = page,
+                    Limit = limit,
+                };
+            }, TimeSpan.FromMinutes(2));
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -65,16 +73,21 @@ public class UrunController : ControllerBase
         try
         {
             _logger.LogInformation("Getting products by category: {Category}", kategori);
-            var query = _context.Urunler.Where(u => u.Kategori.ToLower() == kategori.ToLower());
-            var total = await query.CountAsync();
-            var items = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
-            return Ok(new PagedResponse<Urun>
+            var cacheKey = $"urunler_kategori_{kategori}_{page}_{limit}";
+            var result = await _cache.GetOrSetAsync(cacheKey, async () =>
             {
-                Items = items,
-                Total = total,
-                Page = page,
-                Limit = limit,
-            });
+                var query = _context.Urunler.Where(u => u.Kategori.ToLower() == kategori.ToLower());
+                var total = await query.CountAsync();
+                var items = await query.Skip((page - 1) * limit).Take(limit).ToListAsync();
+                return new PagedResponse<Urun>
+                {
+                    Items = items,
+                    Total = total,
+                    Page = page,
+                    Limit = limit,
+                };
+            }, TimeSpan.FromMinutes(2));
+            return Ok(result);
         }
         catch (Exception ex)
         {

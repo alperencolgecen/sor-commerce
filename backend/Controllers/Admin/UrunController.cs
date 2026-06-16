@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using backend.Data;
 using backend.Models;
+using backend.Services;
 
 namespace backend.Controllers.Admin;
 
@@ -14,11 +15,13 @@ public class UrunController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IWebHostEnvironment _env;
     private readonly ILogger<UrunController> _logger;
-    public UrunController(AppDbContext context, IWebHostEnvironment env, ILogger<UrunController> logger)
+    private readonly ICacheService _cache;
+    public UrunController(AppDbContext context, IWebHostEnvironment env, ILogger<UrunController> logger, ICacheService cache)
     {
         _context = context;
         _env = env;
         _logger = logger;
+        _cache = cache;
     }
 
     [HttpGet]
@@ -76,6 +79,7 @@ public class UrunController : ControllerBase
 
             _context.Urunler.Add(urun);
             await _context.SaveChangesAsync();
+            InvalidateProductCache();
             _logger.LogInformation("Product created with ID {ProductId}", urun.Id);
             return CreatedAtAction(nameof(GetById), new { id = urun.Id }, urun);
         }
@@ -108,6 +112,7 @@ public class UrunController : ControllerBase
 
             _context.Entry(urun).State = EntityState.Modified;
             await _context.SaveChangesAsync();
+            InvalidateProductCache();
             _logger.LogInformation("Product {ProductId} updated", id);
             return NoContent();
         }
@@ -128,6 +133,7 @@ public class UrunController : ControllerBase
             if (urun == null) return NotFound();
             _context.Urunler.Remove(urun);
             await _context.SaveChangesAsync();
+            InvalidateProductCache();
             _logger.LogInformation("Product {ProductId} deleted", id);
             return NoContent();
         }
@@ -136,6 +142,11 @@ public class UrunController : ControllerBase
             _logger.LogError(ex, "Error deleting product {ProductId}", id);
             return StatusCode(500, new { message = "Ürün silinirken bir hata oluştu" });
         }
+    }
+
+    private void InvalidateProductCache()
+    {
+        _cache.Remove("urunler_1_20");
     }
 
     private async Task<string> SaveImage(IFormFile file)

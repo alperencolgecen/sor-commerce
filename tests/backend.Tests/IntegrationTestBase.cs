@@ -21,6 +21,8 @@ public class TestStartup
         services.AddAuthorization();
         services.AddScoped<ISmsService, SmsService>();
         services.AddScoped<IEmailService, EmailService>();
+        services.AddMemoryCache();
+        services.AddSingleton<ICacheService, CacheService>();
         services.AddCors(o => o.AddPolicy("ReactPolicy", b =>
             b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
     }
