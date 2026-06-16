@@ -38,6 +38,7 @@ builder.Services.AddScoped<ISmsService, SmsService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICacheService, CacheService>();
+builder.Services.AddSingleton<AppSettingsService>();
 
 builder.Services.AddCors(options =>
 {
