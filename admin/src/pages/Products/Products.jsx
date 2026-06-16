@@ -83,6 +83,7 @@ export default function Products() {
                 <th>İndirim</th>
                 <th>Kargo</th>
                 <th>Taksit</th>
+                <th>Stok</th>
                 <th>Durum</th>
                 <th style={{ width: 80 }}>İşlem</th>
               </tr>
@@ -116,6 +117,7 @@ export default function Products() {
                   <td style={{ fontSize: 12 }}>
                     {p.taksitSayisi > 0 ? `${p.taksitSayisi} x ₺${p.taksitAylikFiyat?.toLocaleString('tr-TR')}` : '-'}
                   </td>
+                  <td>{p.stokMiktari ?? (p.stokta ? '-' : 0)}</td>
                   <td>
                     <span className={`badge ${p.stokta ? 'badge-success' : 'badge-danger'}`}>
                       {p.stokta ? 'Stokta' : 'Stok Yok'}
@@ -134,7 +136,7 @@ export default function Products() {
                 </tr>
               ))}
               {filtered.length === 0 && (
-                <tr><td colSpan={11} style={{ textAlign: 'center', padding: 40, color: 'var(--text-sec)' }}>Ürün bulunamadı</td></tr>
+                <tr><td colSpan={12} style={{ textAlign: 'center', padding: 40, color: 'var(--text-sec)' }}>Ürün bulunamadı</td></tr>
               )}
             </tbody>
           </table>

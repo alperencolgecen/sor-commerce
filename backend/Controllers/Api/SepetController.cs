@@ -33,6 +33,8 @@ public class SepetController : ControllerBase
                 {
                     detay.UrunAd = urun.Ad;
                     detay.UrunGorsel = urun.Gorsel;
+                    urun.StokMiktari = Math.Max(0, urun.StokMiktari - detay.Adet);
+                    if (urun.StokMiktari == 0) urun.Stokta = false;
                 }
             }
             _context.Siparisler.Add(siparis);

@@ -44,6 +44,7 @@ const defaultForm = {
   yorumSayisi: 0,
   ucretsizKargo: false,
   stokta: true,
+  stokMiktari: 0,
   taksitSayisi: 0,
   taksitAylikFiyat: 0,
   gorsel: '',
@@ -78,6 +79,7 @@ export default function ProductForm() {
             yorumSayisi: data.yorumSayisi || 0,
             ucretsizKargo: data.ucretsizKargo || false,
             stokta: data.stokta !== false,
+            stokMiktari: data.stokMiktari || 0,
             taksitSayisi: data.taksitSayisi || 0,
             taksitAylikFiyat: data.taksitAylikFiyat || 0,
             gorsel: data.gorsel || '',
@@ -120,6 +122,7 @@ export default function ProductForm() {
       fd.append('aciklama', form.aciklama);
       fd.append('ucretsizKargo', form.ucretsizKargo);
       fd.append('stokta', form.stokta);
+      fd.append('stokMiktari', form.stokMiktari || 0);
       fd.append('taksitSayisi', form.taksitSayisi || 0);
       fd.append('taksitAylikFiyat', form.taksitAylikFiyat || 0);
       if (imageFile) fd.append('gorselDosya', imageFile);
@@ -220,9 +223,13 @@ export default function ProductForm() {
               <input type="number" min="0" value={form.yorumSayisi} onChange={e => update('yorumSayisi', +e.target.value)} />
             </div>
             <div className="form-group">
+              <label>Stok Miktarı</label>
+              <input type="number" min="0" value={form.stokMiktari} onChange={e => update('stokMiktari', +e.target.value)} />
+            </div>
+            <div className="form-group">
               <label>&nbsp;</label>
               <div className="checkbox-group">
-                <label><input type="checkbox" checked={form.stokta} onChange={e => update('stokta', e.target.checked)} /> Stokta</label>
+                <label><input type="checkbox" checked={form.stokta} onChange={e => { update('stokta', e.target.checked); if (e.target.checked && form.stokMiktari === 0) update('stokMiktari', 10); }} /> Stokta</label>
               </div>
             </div>
           </div>

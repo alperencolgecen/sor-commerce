@@ -34,6 +34,7 @@ public class Urun
 
     public bool UcretsizKargo { get; set; }
     public bool Stokta { get; set; }
+    public int StokMiktari { get; set; } = 0;
 
     public int TaksitSayisi { get; set; }
     public decimal TaksitAylikFiyat { get; set; }
