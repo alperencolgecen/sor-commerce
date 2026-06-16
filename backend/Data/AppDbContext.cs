@@ -12,6 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Kullanici> Kullanicilar { get; set; }
     public DbSet<Siparis> Siparisler { get; set; }
     public DbSet<SiparisDetay> SiparisDetaylari { get; set; }
+    public DbSet<Adres> Adresler { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
