@@ -29,11 +29,14 @@ export default function Checkout() {
   const [smsCode, setSmsCode] = useState(['', '', '', '', '', '']);
   const [realSmsCode, setRealSmsCode] = useState('');
   const [smsTimer, setSmsTimer] = useState(60);
+  const [smsSending, setSmsSending] = useState(false);
+  const [smsSent, setSmsSent] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [showEmailPreview, setShowEmailPreview] = useState(false);
   const smsInputs = smsCode;
   const smsExpired = smsTimer <= 0;
   const timerRef = useRef(null);
+  const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
   const [address, setAddress] = useState({
     fullName: '', phone: '', email: '', city: '', district: '', neighborhood: '', address: '', zip: '',
@@ -90,12 +93,22 @@ export default function Checkout() {
   };
 
   useEffect(() => {
-    if (show3d) {
-      const code = String(Math.floor(100000 + Math.random() * 900000));
-      setRealSmsCode(code);
-      setSmsCode(['', '', '', '', '', '']);
-      setSmsTimer(60);
-    }
+    if (!show3d) return;
+    setSmsSending(true);
+    setSmsSent(false);
+    setSmsCode(['', '', '', '', '', '']);
+    setSmsTimer(60);
+    fetch(`${API_BASE}/api/sms/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: address.phone.replace(/\D/g, '') }),
+    }).then(res => res.json()).then(data => {
+      setRealSmsCode(data.code);
+      setSmsSent(true);
+    }).catch(() => {
+      setRealSmsCode(String(Math.floor(100000 + Math.random() * 900000)));
+      setSmsSent(false);
+    }).finally(() => setSmsSending(false));
   }, [show3d]);
 
   useEffect(() => {
@@ -110,10 +123,20 @@ export default function Checkout() {
   }, [show3d, smsTimer]);
 
   const resendSms = () => {
-    const code = String(Math.floor(100000 + Math.random() * 900000));
-    setRealSmsCode(code);
+    setSmsSending(true);
     setSmsCode(['', '', '', '', '', '']);
     setSmsTimer(60);
+    fetch(`${API_BASE}/api/sms/send-code`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone: address.phone.replace(/\D/g, '') }),
+    }).then(res => res.json()).then(data => {
+      setRealSmsCode(data.code);
+      setSmsSent(true);
+    }).catch(() => {
+      setRealSmsCode(String(Math.floor(100000 + Math.random() * 900000)));
+      setSmsSent(false);
+    }).finally(() => setSmsSending(false));
   };
 
   const nextStep = () => {
@@ -221,7 +244,7 @@ export default function Checkout() {
                 <span>{smsExpired ? 'Süre doldu' : `${String(Math.floor(smsTimer / 60)).padStart(2, '0')}:${String(smsTimer % 60).padStart(2, '0')}`}</span>
               </div>
 
-              {/* Simulated SMS Inbox */}
+              {/* SMS Inbox */}
               <div className="sms-inbox">
                 <div className="sms-inbox-header">
                   <i className="fas fa-comment-dots" /> Mesajlar
@@ -231,9 +254,7 @@ export default function Checkout() {
                   <div className="sms-inbox-content">
                     <div className="sms-inbox-sender">Akbank 3D Secure</div>
                     <div className="sms-inbox-text">
-                      {realSmsCode
-                        ? `${realSmsCode} bankacılık işleminizin doğrulama kodudur. Kimseyle paylaşmayınız.`
-                        : 'Kod gönderiliyor...'}
+                      {smsSending ? 'Kod gönderiliyor...' : smsSent ? `${realSmsCode} bankacılık işleminizin doğrulama kodudur. Kimseyle paylaşmayınız.` : 'Kod gönderilemedi, tekrar deneyin.'}
                     </div>
                   </div>
                 </div>
@@ -254,7 +275,7 @@ export default function Checkout() {
                 ))}
               </div>
               <p className="modal-3d-resend">
-                Kod gelmedi mi? <button onClick={resendSms}>Tekrar Gönder</button>
+                Kod gelmedi mi? <button onClick={resendSms} disabled={smsSending}>{smsSending ? 'Gönderiliyor...' : 'Tekrar Gönder'}</button>
               </p>
             </div>
             <div className="modal-3d-footer">
@@ -262,7 +283,7 @@ export default function Checkout() {
               <button
                 className="modal-3d-confirm"
                 onClick={verify3d}
-                disabled={smsCode.some(c => !c) || smsExpired}
+                disabled={smsCode.some(c => !c) || smsExpired || smsSending}
               >
                 <i className="fas fa-check-circle" /> Onayla
               </button>
