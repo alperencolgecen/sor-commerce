@@ -21,35 +21,59 @@ public class SepetController : ControllerBase
     [HttpPost("siparis")]
     public async Task<IActionResult> SiparisVer([FromBody] Siparis siparis)
     {
-        _logger.LogInformation("Creating order for user {UserId}", siparis.KullaniciId);
-        siparis.Tarih = DateTime.UtcNow;
-        siparis.Durum = "Beklemede";
-        _context.Siparisler.Add(siparis);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Order {OrderId} created", siparis.Id);
-        return CreatedAtAction(nameof(GetSiparis), new { id = siparis.Id }, siparis);
+        try
+        {
+            _logger.LogInformation("Creating order for user {UserId}", siparis.KullaniciId);
+            siparis.Tarih = DateTime.UtcNow;
+            siparis.Durum = "Beklemede";
+            _context.Siparisler.Add(siparis);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Order {OrderId} created", siparis.Id);
+            return CreatedAtAction(nameof(GetSiparis), new { id = siparis.Id }, siparis);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating order for user {UserId}", siparis.KullaniciId);
+            return StatusCode(500, new { message = "Sipariş oluşturulurken hata oluştu" });
+        }
     }
 
     [HttpGet("siparis/{id}")]
     public async Task<IActionResult> GetSiparis(int id)
     {
-        _logger.LogInformation("Getting order {OrderId}", id);
-        var siparis = await _context.Siparisler
-            .Include(s => s.Detaylar)
-            .FirstOrDefaultAsync(s => s.Id == id);
-        if (siparis == null) return NotFound();
-        return Ok(siparis);
+        try
+        {
+            _logger.LogInformation("Getting order {OrderId}", id);
+            var siparis = await _context.Siparisler
+                .Include(s => s.Detaylar)
+                .FirstOrDefaultAsync(s => s.Id == id);
+            if (siparis == null) return NotFound();
+            return Ok(siparis);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting order {OrderId}", id);
+            return StatusCode(500, new { message = "Sipariş yüklenirken hata oluştu" });
+        }
     }
 
     [HttpGet("siparisler/{kullaniciId}")]
     public async Task<IActionResult> GetSiparisler(int kullaniciId)
     {
-        _logger.LogInformation("Getting orders for user {UserId}", kullaniciId);
-        var siparisler = await _context.Siparisler
-            .Include(s => s.Detaylar)
-            .Where(s => s.KullaniciId == kullaniciId)
-            .OrderByDescending(s => s.Tarih)
-            .ToListAsync();
-        return Ok(siparisler);
+        try
+        {
+            _logger.LogInformation("Getting orders for user {UserId}", kullaniciId);
+            var siparisler = await _context.Siparisler
+                .Include(s => s.Detaylar)
+                .Where(s => s.KullaniciId == kullaniciId)
+                .OrderByDescending(s => s.Tarih)
+                .ToListAsync();
+            return Ok(siparisler);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting orders for user {UserId}", kullaniciId);
+            return StatusCode(500, new { message = "Siparişler yüklenirken hata oluştu" });
+        }
     }
 }

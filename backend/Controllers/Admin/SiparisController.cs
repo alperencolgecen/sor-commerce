@@ -21,23 +21,39 @@ public class SiparisController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        _logger.LogInformation("Getting all orders");
-        var siparisler = await _context.Siparisler
-            .Include(s => s.Detaylar)
-            .OrderByDescending(s => s.Tarih)
-            .ToListAsync();
-        return Ok(siparisler);
+        try
+        {
+            _logger.LogInformation("Getting all orders");
+            var siparisler = await _context.Siparisler
+                .Include(s => s.Detaylar)
+                .OrderByDescending(s => s.Tarih)
+                .ToListAsync();
+            return Ok(siparisler);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting orders");
+            return StatusCode(500, new { message = "Siparişler yüklenirken hata oluştu" });
+        }
     }
 
     [HttpPut("{id}/durum")]
     public async Task<IActionResult> UpdateDurum(int id, [FromBody] string durum)
     {
-        _logger.LogInformation("Updating order {OrderId} status to {Status}", id, durum);
-        var siparis = await _context.Siparisler.FindAsync(id);
-        if (siparis == null) return NotFound();
-        siparis.Durum = durum;
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Order {OrderId} status updated", id);
-        return NoContent();
+        try
+        {
+            _logger.LogInformation("Updating order {OrderId} status to {Status}", id, durum);
+            var siparis = await _context.Siparisler.FindAsync(id);
+            if (siparis == null) return NotFound();
+            siparis.Durum = durum;
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Order {OrderId} status updated", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating order {OrderId} status", id);
+            return StatusCode(500, new { message = "Sipariş durumu güncellenirken hata oluştu" });
+        }
     }
 }

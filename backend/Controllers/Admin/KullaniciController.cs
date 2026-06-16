@@ -21,7 +21,15 @@ public class KullaniciController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        _logger.LogInformation("Getting all users");
-        return Ok(await _context.Kullanicilar.Select(k => new { k.Id, k.Ad, k.Email }).ToListAsync());
+        try
+        {
+            _logger.LogInformation("Getting all users");
+            return Ok(await _context.Kullanicilar.Select(k => new { k.Id, k.Ad, k.Email }).ToListAsync());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error getting users");
+            return StatusCode(500, new { message = "Kullanıcılar yüklenirken hata oluştu" });
+        }
     }
 }
