@@ -10,6 +10,7 @@ import Header from './components/Header/Header';
 import SecondaryNav from './components/SecondaryNav/SecondaryNav';
 import SideMenu from './components/SideMenu/SideMenu';
 import Footer from './components/Footer/Footer';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Login/Register';
@@ -51,6 +52,7 @@ export default function App() {
             <SecondaryNav />
             <SideMenu isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
             <main className="main-content">
+              <ErrorBoundary>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/login" element={<Login />} />
@@ -78,6 +80,7 @@ export default function App() {
                 <Route path="/iade-kosullari" element={<IadeKosullari />} />
                 <Route path="/kvkk" element={<KVKK />} />
               </Routes>
+              </ErrorBoundary>
             </main>
             <Footer />
           </CartProvider>

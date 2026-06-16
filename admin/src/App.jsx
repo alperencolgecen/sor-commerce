@@ -8,6 +8,7 @@ import ProductForm from './pages/Products/ProductForm';
 import Categories from './pages/Categories/Categories';
 import Orders from './pages/Orders/Orders';
 import Users from './pages/Users/Users';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 
 function ProtectedRoute({ children }) {
   const { isLoggedIn } = useAdminAuth();
@@ -19,7 +20,7 @@ function AdminRoutes() {
   return (
     <Routes>
       <Route path="/admin/login" element={isLoggedIn ? <Navigate to="/admin" replace /> : <Login />} />
-      <Route path="/admin" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
+      <Route path="/admin" element={<ProtectedRoute><ErrorBoundary><Layout /></ErrorBoundary></ProtectedRoute>}>
         <Route index element={<Dashboard />} />
         <Route path="urunler" element={<Products />} />
         <Route path="urunler/ekle" element={<ProductForm />} />
