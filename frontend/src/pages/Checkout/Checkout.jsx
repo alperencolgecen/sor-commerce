@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
+import { useToast } from '../../context/ToastContext';
 import { turkishCities } from '../../data/turkishCities';
 import Breadcrumb from '../../components/Breadcrumb/Breadcrumb';
 import './Checkout.css';
@@ -22,6 +23,7 @@ const cardTypes = [
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const { items, totalPrice, clearCart } = useCart();
   const [step, setStep] = useState(1);
   const [processing, setProcessing] = useState(false);
@@ -105,9 +107,11 @@ export default function Checkout() {
     }).then(res => res.json()).then(data => {
       setRealSmsCode(data.code);
       setSmsSent(true);
+      showToast('SMS kodunuz gonderildi', 'success', 3000);
     }).catch(() => {
       setRealSmsCode(String(Math.floor(100000 + Math.random() * 900000)));
       setSmsSent(false);
+      showToast('SMS gonderilemedi, lokal kod kullaniliyor', 'warning', 4000);
     }).finally(() => setSmsSending(false));
   }, [show3d]);
 
@@ -211,6 +215,8 @@ export default function Checkout() {
       setOrderComplete(true);
       clearCart();
       sendOrderEmail();
+      showToast('Siparişiniz başarıyla alındı!', 'success', 5000);
+      showToast('E-posta bildirimi gonderildi', 'info', 4000);
     }, 2000);
   };
 
