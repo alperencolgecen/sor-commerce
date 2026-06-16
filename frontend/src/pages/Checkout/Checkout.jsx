@@ -366,7 +366,7 @@ export default function Checkout() {
                     </div>
                     <div className="form-group">
                       <label>Posta Kodu</label>
-                      <input type="text" value={address.zip} onChange={e => setAddress({ ...address, zip: e.target.value })} placeholder="34000" />
+                      <input type="text" inputMode="numeric" value={address.zip} onChange={e => setAddress({ ...address, zip: e.target.value.replace(/\D/g, '').slice(0, 5) })} placeholder="34000" maxLength={5} />
                     </div>
                     <div className="form-group full">
                       <label>Açık Adres <span>*</span></label>
