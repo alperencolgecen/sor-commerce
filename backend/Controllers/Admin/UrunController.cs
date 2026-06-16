@@ -30,7 +30,7 @@ public class UrunController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromForm] Urun urun, IFormFile? gorselDosya)
+    public async Task<IActionResult> Create([FromForm] Urun urun, IFormFile gorselDosya)
     {
         if (gorselDosya != null)
             urun.Gorsel = await SaveImage(gorselDosya);
@@ -45,7 +45,7 @@ public class UrunController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromForm] Urun urun, IFormFile? gorselDosya)
+    public async Task<IActionResult> Update(int id, [FromForm] Urun urun, IFormFile gorselDosya)
     {
         if (id != urun.Id) return BadRequest();
 
