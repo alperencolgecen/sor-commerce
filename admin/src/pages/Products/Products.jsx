@@ -24,7 +24,7 @@ export default function Products() {
   useEffect(() => {
     setLoading(true);
     api.get('/api/admin/urun')
-      .then(setData)
+      .then(res => setData(res.items || res))
       .catch(() => {})
       .finally(() => setLoading(false));
   }, []);

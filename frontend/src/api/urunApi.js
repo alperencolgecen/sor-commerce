@@ -24,11 +24,11 @@ function mapUrun(u) {
   };
 }
 
-export async function getProducts() {
-  const res = await fetch(`${BASE}/api/urun`);
+export async function getProducts(page = 1, limit = 200) {
+  const res = await fetch(`${BASE}/api/urun?page=${page}&limit=${limit}`);
   if (!res.ok) throw new Error('API Error');
   const data = await res.json();
-  return data.map(mapUrun);
+  return (data.items || data).map(mapUrun);
 }
 
 export async function getProductById(id) {
@@ -37,9 +37,9 @@ export async function getProductById(id) {
   return mapUrun(await res.json());
 }
 
-export async function getProductsByCategory(kategori) {
-  const res = await fetch(`${BASE}/api/urun/kategori/${kategori}`);
+export async function getProductsByCategory(kategori, page = 1, limit = 200) {
+  const res = await fetch(`${BASE}/api/urun/kategori/${kategori}?page=${page}&limit=${limit}`);
   if (!res.ok) throw new Error('API Error');
   const data = await res.json();
-  return data.map(mapUrun);
+  return (data.items || data).map(mapUrun);
 }
